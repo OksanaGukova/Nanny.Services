@@ -1,0 +1,43 @@
+.toggle-wrapper {
+  width: 70px;
+  height: 36px;
+  background: #ddd;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+  transition: background 0.3s ease;
+}
+
+.toggle-slider {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--button-color);
+  color: #fff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+}
+
+/* позиції */
+.red {
+
+  background: #f03f3b;
+  
+}
+.blue {
+
+  background: #0957c3;
+
+}
+.gray {
+  --primary-color: #103931;  
+
+}
+
+
