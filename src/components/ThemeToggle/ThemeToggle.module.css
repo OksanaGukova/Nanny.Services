@@ -15,7 +15,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--button-color);
+  background: var(--primary-color);
   color: #fff;
   font-size: 16px;
   display: flex;
@@ -35,8 +35,8 @@
   background: #0957c3;
 
 }
-.gray {
-  --primary-color: #103931;  
+.green {
+  background: #103931;  
 
 }
 
