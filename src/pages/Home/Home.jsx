@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import Modal from '../../components/Modal/Modal';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import RegistrationForm from '../../components/RegistrationForm/RegistrationForm';
+import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
+import sprite from '/svg/icon.svg'
 
 
 export default function Home({
@@ -17,12 +19,18 @@ export default function Home({
    const isLoggedIn = useSelector(selectIsLoggedIn);
     return (
         <>
+       
         <div className={css.container}>
             <div className={css.background}>
-                <p>Nanny.Services</p>
-                <h1>Make Life Easier for the Family:</h1>
-                <p>Find Babysitters Online for All Occasions</p>
-                <button>Get started</button>
+                <div className={css.favContainer}><p className={css.favicon}>Nanny.Services</p></div>
+               <div className={css.headerContainer}>
+                    <h1 className={css.header}>Make Life Easier for the Family:</h1>
+                    <p className={css.text}>Find Babysitters Online for All Occasions</p>
+                    <button className={css.start}>Get started
+                        <svg className={css.arrow}>  <use href={`${sprite}#icon-Arrow-16`}></use></svg>
+                    </button>
+                    
+               </div>
             </div>
             <div className={css.picture}>
                 <div>
@@ -42,6 +50,7 @@ export default function Home({
                             >
                                 Registration
                             </button>
+                             <ThemeToggle/>
                         </>
                     )}
         </div>
@@ -56,15 +65,16 @@ export default function Home({
     <RegistrationForm onClose={() => setRegisterOpen(false)} />
   </Modal>
 )}
-
-            </div>
-            <div>
+  <div>
                 <div>
                     <svg></svg>
                 </div>
                 <p>Experienced nannies</p>
                 <p>15,000</p>
             </div>
+
+            </div>
+          
         </div>
         </>
     )

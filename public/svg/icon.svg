@@ -1,0 +1,25 @@
+
+1.2k → 882 bytes 72.06%
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+    <symbol id="icon-heart-1" viewBox="0 0 32 32">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.462" d="M27.787 6.147a7.326 7.326 0 0 0-10.373 0L16.001 7.56l-1.413-1.413a7.333 7.333 0 0 0-10.374 0 7.333 7.333 0 0 0 0 10.374l11.787 11.787 11.787-11.787a7.326 7.326 0 0 0 0-10.373z"/>
+    </symbol>
+    <symbol id="icon-map-pin" viewBox="0 0 32 32">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M28 13.333c0 9.333-12 17.333-12 17.333s-12-8-12-17.333a12.003 12.003 0 0 1 12-12 12.003 12.003 0 0 1 12 12z"/>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M16 17.333a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
+    </symbol>
+    <symbol id="icon-eye-off" viewBox="0 0 32 32">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" d="M23.92 23.92A13.43 13.43 0 0 1 16 26.667C6.667 26.667 1.333 16 1.333 16A24.605 24.605 0 0 1 8.08 8.08m5.12-2.427a12.161 12.161 0 0 1 2.8-.32C25.333 5.333 30.667 16 30.667 16a24.646 24.646 0 0 1-2.88 4.253m-8.96-1.426a4.003 4.003 0 0 1-5.755.102 3.994 3.994 0 0 1-.824-4.457c.219-.491.534-.932.927-1.298M1.333 1.333l29.333 29.333"/>
+    </symbol>
+    <symbol id="icon-fe_check" viewBox="0 0 32 32">
+      <path fill="#fbfbfb" d="M8 13.333 5.333 16l8 8 13.333-13.333L23.999 8 13.332 18.667l-5.333-5.333z" style="fill:var(--color1, #fbfbfb)"/>
+    </symbol>
+    <symbol id="icon-Arrow-16" viewBox="0 0 32 32">
+      <path fill="#fbfbfb" d="M26.02 3.149a1.882 1.882 0 0 0-2.126-1.602L7.118 3.905a1.883 1.883 0 0 0 .524 3.728l14.912-2.096 2.096 14.912a1.882 1.882 0 1 0 3.728-.524L26.02 3.149zM5.268 31.604l20.391-27.06-3.007-2.266-20.391 27.06 3.007 2.266z" style="fill:var(--color1, #fbfbfb)"/>
+    </symbol>
+    <symbol id="icon-star" viewBox="0 0 32 32">
+      <path fill="#ffc531" stroke="#ffc531" stroke-width="2.4" d="M19.6 9.395a2.201 2.201 0 0 0 1.57 1.141l7.6 1.313-5.375 5.535a2.2 2.2 0 0 0-.6 1.846l1.098 7.635-6.922-3.402-.234-.1a2.203 2.203 0 0 0-1.473 0l-.234.1-6.924 3.402 1.1-7.635a2.2 2.2 0 0 0-.6-1.846l-5.377-5.535 7.602-1.313a2.198 2.198 0 0 0 1.57-1.141l3.6-6.822 3.6 6.822z" style="fill:var(--color2, #ffc531);stroke:var(--color2, #ffc531)"/>
+    </symbol>
+  </defs>
+</svg>
