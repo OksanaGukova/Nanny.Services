@@ -7,7 +7,7 @@ import Modal from '../../components/Modal/Modal';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import RegistrationForm from '../../components/RegistrationForm/RegistrationForm';
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
-import sprite from '/svg/icon.svg'
+import sprite from '../../public/svg/icon.svg'
 
 
 export default function Home({
@@ -33,28 +33,30 @@ export default function Home({
                </div>
             </div>
             <div className={css.picture}>
-                <div>
-                   <NavLink className={css.homeText} to='/'>Home</NavLink>
-                        <NavLink className={css.homeText} to='/nannies'>Nannies</NavLink>
-                </div>
-                <div>
-                     <div className={css.login}>
-           {!isLoggedIn  && ( // Додаємо умову для відображення кнопок входу та реєстрації
-                        <>
-                            <div className={css.loginBox} onClick={() => setLoginOpen(true)}>
-                                <button className={css.loginText}>Log in</button>
-                            </div>
-                            <button
-                                className={`${css.button} ${activeClass || ""}`}
-                                onClick={() => setRegisterOpen(true)}
-                            >
-                                Registration
-                            </button>
-                             <ThemeToggle/>
-                        </>
-                    )}
-        </div>
+           <div className={css.pictureContainer}>
+                    <div className={css.homeNannies}>
+                       <NavLink className={css.homeText} to='/'>Home</NavLink>
+                            <NavLink className={css.homeText} to='/nannies'>Nannies</NavLink>
                     </div>
+                  
+                         <div className={css.login}>
+               {!isLoggedIn  && ( // Додаємо умову для відображення кнопок входу та реєстрації
+                            <>
+                                <div className={css.loginBox} onClick={() => setLoginOpen(true)}>
+                                    <button className={css.loginText}>Log in</button>
+                                </div>
+                                <button
+                                    className={`${css.regButton} ${activeClass || ""}`}
+                                    onClick={() => setRegisterOpen(true)}
+                                >
+                                    Registration
+                                </button>
+                                 <ThemeToggle/>
+                            </>
+                        )}
+            </div>
+                        
+           </div>
                      {isLoginOpen && (
   <Modal onClose={() => setLoginOpen(false)}>
     <LoginForm onClose={() => setLoginOpen(false)} />
@@ -65,12 +67,14 @@ export default function Home({
     <RegistrationForm onClose={() => setRegisterOpen(false)} />
   </Modal>
 )}
-  <div>
-                <div>
-                    <svg></svg>
+  <div className={css.experience}>
+                <div className={css.checkContainer}>
+                   <svg className={css.check}>  <use href={`${sprite}#icon-fe_check`}></use></svg>
                 </div>
-                <p>Experienced nannies</p>
-                <p>15,000</p>
+                <div>
+                    <p className={css.expText}>Experienced nannies</p>
+                    <p className={css.expNumber}>15,000</p>
+                </div>
             </div>
 
             </div>

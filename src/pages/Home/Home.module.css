@@ -8,7 +8,7 @@ display: flex;
 }
 
 .background {
-  border-radius: 0 30px 30px 0;
+  border-radius:30px 0 0 30px;
   width: 699px;
   height: 736px;
  background: var(--primary-color); 
@@ -80,5 +80,96 @@ color: #fbfbfb;
     border-radius: 0 30px 30px 0;
 width: 699px;
 height: 736px;
+background: url('../../public/img/background.jpg');
 
+}
+
+.pictureContainer {
+    display: flex;
+    gap: 92px;
+    padding: 20px 70px;
+        align-items: center;
+}
+
+.homeNannies {
+    display: flex;
+    gap: 40px;
+    
+}
+
+.homeText {
+font-size: 16px;
+line-height: 1.25;
+letter-spacing: -0.01em;
+color: #fbfbfb;
+}
+
+.login {
+    display: flex;
+    gap: 8px;
+        align-items: center;
+}
+
+.loginText {
+    border: 1px solid rgba(251, 251, 251, 0.4);
+border-radius: 30px;
+padding: 14px 39px;
+width: 124px;
+height: 48px;
+font-weight: 500;
+font-size: 16px;
+line-height: 1.25;
+letter-spacing: -0.01em;
+color: #fbfbfb;
+ background-color: transparent;  
+}
+
+.regButton {
+     background-color: var(--button-color, var(--primary-color));
+     border-radius: 30px;
+padding: 14px 40px;
+width: 168px;
+height: 48px;
+font-weight: 500;
+font-size: 16px;
+line-height: 1.25;
+letter-spacing: -0.01em;
+color: #fbfbfb;
+}
+
+.experience{
+border-radius: 20px;
+width: 284px;
+height: 118px;
+background: #fbfbfb;
+display: flex;
+gap: 16px;
+padding: 32px;
+margin-top: 480px;
+margin-left: 365px;
+}
+
+.checkContainer {
+border-radius: 13px;
+width: 54px;
+height: 54px;
+  background: var(--primary-color); 
+
+}
+
+.check {
+    width: 30px;
+    height: 30px;
+   fill: #fff;
+}
+
+.expText {
+font-size: 16px;
+color: rgba(17, 16, 28, 0.5);
+}
+
+.expNumber {
+font-weight: 700;
+font-size: 24px;
+color: #11101c;
 }
