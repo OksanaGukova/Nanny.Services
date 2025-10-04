@@ -3,7 +3,7 @@ import css from './RegistrationForm.module.css'
 import * as Yup from "yup";
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../../redux/auth/operations';
-import sprite from '../../public/svg/icon.svg'
+import sprite from '/svg/icon.svg'
 
 
 const validationSchema = Yup.object().shape({

@@ -1,0 +1,13 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 170px 128px 0 128px;
+}
+
+.listItem {
+    border-radius: 24px;
+width: 1184px;
+height: 318px;
+   background-color: #fff;
+}

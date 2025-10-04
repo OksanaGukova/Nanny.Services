@@ -1,0 +1,14 @@
+.cardContainer {
+ padding: 24px 24px 0 24px;
+}
+
+.avatarImg {
+    border-radius: 15px;
+width: 96px;
+height: 96px;
+} 
+
+svg {
+    width: 16px;
+    height: 16px;
+}

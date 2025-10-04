@@ -59,7 +59,7 @@ margin-bottom: 64px;
 .start {
 border: 1px solid rgba(251, 251, 251, 0.4);
 border-radius: 30px;
-padding: 18px 50px;
+padding: 18px 48px;
 width: 230px;
 height: 60px;
 background-color: var(--button-color);
@@ -68,11 +68,13 @@ font-size: 20px;
 line-height: 1.2;
 letter-spacing: -0.01em;
 color: #fbfbfb;
+display: flex;
+gap: 18px;
 }
 
 .arrow {
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 17px;
 }
 
 
@@ -86,7 +88,7 @@ background: url('../../public/img/background.jpg');
 
 .pictureContainer {
     display: flex;
-    gap: 92px;
+    gap: 20px;
     padding: 20px 70px;
         align-items: center;
 }
@@ -94,15 +96,10 @@ background: url('../../public/img/background.jpg');
 .homeNannies {
     display: flex;
     gap: 40px;
+        align-items: center;
     
 }
 
-.homeText {
-font-size: 16px;
-line-height: 1.25;
-letter-spacing: -0.01em;
-color: #fbfbfb;
-}
 
 .login {
     display: flex;
@@ -154,6 +151,8 @@ border-radius: 13px;
 width: 54px;
 height: 54px;
   background: var(--primary-color); 
+ text-align: center;
+ padding: 12px;
 
 }
 
@@ -172,4 +171,25 @@ color: rgba(17, 16, 28, 0.5);
 font-weight: 700;
 font-size: 24px;
 color: #11101c;
+}
+
+.homeText {
+  position: relative;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 5px;
+}
+
+/* Активна сторінка */
+.active::after {
+  content: "";
+  position: absolute;
+  bottom: -8px; /* відстань від тексту */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
 }

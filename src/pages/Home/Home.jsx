@@ -7,7 +7,8 @@ import Modal from '../../components/Modal/Modal';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import RegistrationForm from '../../components/RegistrationForm/RegistrationForm';
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
-import sprite from '../../public/svg/icon.svg'
+import UserMenu from '../../components/UserMenu/UserMenu';
+import Links from '../../components/Links/Links';
 
 
 export default function Home({
@@ -27,7 +28,9 @@ export default function Home({
                     <h1 className={css.header}>Make Life Easier for the Family:</h1>
                     <p className={css.text}>Find Babysitters Online for All Occasions</p>
                     <button className={css.start}>Get started
-                        <svg className={css.arrow}>  <use href={`${sprite}#icon-Arrow-16`}></use></svg>
+                        <svg className={css.arrow}> 
+                            <use href="/svg/icon.svg#icon-Arrow-16"></use>
+                           </svg>
                     </button>
                     
                </div>
@@ -35,26 +38,25 @@ export default function Home({
             <div className={css.picture}>
            <div className={css.pictureContainer}>
                     <div className={css.homeNannies}>
-                       <NavLink className={css.homeText} to='/'>Home</NavLink>
-                            <NavLink className={css.homeText} to='/nannies'>Nannies</NavLink>
+                      <Links/>
+                                                 {isLoggedIn && (
+  <UserMenu/>
+)}
                     </div>
-                  
-                         <div className={css.login}>
-               {!isLoggedIn  && ( // Додаємо умову для відображення кнопок входу та реєстрації
-                            <>
-                                <div className={css.loginBox} onClick={() => setLoginOpen(true)}>
-                                    <button className={css.loginText}>Log in</button>
-                                </div>
-                                <button
-                                    className={`${css.regButton} ${activeClass || ""}`}
-                                    onClick={() => setRegisterOpen(true)}
-                                >
-                                    Registration
-                                </button>
-                                 <ThemeToggle/>
-                            </>
-                        )}
-            </div>
+{!isLoggedIn && (
+  <div className={css.login}>
+    <div className={css.loginBox} onClick={() => setLoginOpen(true)}>
+      <button className={css.loginText}>Log in</button>
+    </div>
+    <button
+      className={`${css.regButton} ${activeClass || ""}`}
+      onClick={() => setRegisterOpen(true)}
+    >
+      Registration
+    </button>
+    <ThemeToggle />
+  </div>
+)}
                         
            </div>
                      {isLoginOpen && (
@@ -69,7 +71,9 @@ export default function Home({
 )}
   <div className={css.experience}>
                 <div className={css.checkContainer}>
-                   <svg className={css.check}>  <use href={`${sprite}#icon-fe_check`}></use></svg>
+                   <svg className={css.check}> 
+                      <use href="/svg/icon.svg#icon-fe_check"></use>
+                     </svg>
                 </div>
                 <div>
                     <p className={css.expText}>Experienced nannies</p>
