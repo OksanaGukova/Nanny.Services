@@ -21,5 +21,9 @@
     <symbol id="icon-star" viewBox="0 0 32 32">
       <path fill="#ffc531" stroke="#ffc531" stroke-width="2.4" d="M19.6 9.395a2.201 2.201 0 0 0 1.57 1.141l7.6 1.313-5.375 5.535a2.2 2.2 0 0 0-.6 1.846l1.098 7.635-6.922-3.402-.234-.1a2.203 2.203 0 0 0-1.473 0l-.234.1-6.924 3.402 1.1-7.635a2.2 2.2 0 0 0-.6-1.846l-5.377-5.535 7.602-1.313a2.198 2.198 0 0 0 1.57-1.141l3.6-6.822 3.6 6.822z" style="fill:var(--color2, #ffc531);stroke:var(--color2, #ffc531)"/>
     </symbol>
+    <symbol id="circle" >
+      <circle cx="5.001" cy="5" r="4.667" fill="#38cd3e"/>
+    </symbol>
+    
   </defs>
 </svg>

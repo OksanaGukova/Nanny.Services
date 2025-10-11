@@ -1,14 +1,131 @@
 .cardContainer {
  padding: 24px 24px 0 24px;
+
+}
+
+.header {
+   display: flex;
+ gap: 24px;  
+}
+
+.avatar {
+    border: 2px solid rgba(240, 63, 59, 0.2);
+border-radius: 30px;
+width: 120px;
+height: 120px;
+display: flex;
+justify-content: center;
+align-items: center;
+position: relative;
+padding: 12px;
 }
 
 .avatarImg {
     border-radius: 15px;
 width: 96px;
 height: 96px;
+position: relative;
+display: block;
 } 
 
 svg {
     width: 16px;
     height: 16px;
+}
+
+.circle {
+  width: 10px;
+  height: 10px;
+  background-color: #38cd3e;
+  border-radius: 50%;
+   position: absolute;
+   top: 10px;       /* трохи нижче від краю, щоб не виходило за фото */
+  right: 10px;   
+  z-index: 1000;
+}
+
+.nannysInfo {
+    display: flex;
+    justify-content: space-between;
+}
+
+.nanny {
+font-weight: 500;
+font-size: 16px;
+line-height: 1.5;
+color: #8a8a89;
+margin-bottom: 8px;
+}
+
+.name {
+font-weight: 500;
+font-size: 24px;
+line-height: 1;
+color: #11101c;
+margin-bottom: 24px;
+}
+
+.infoItem {
+    display: flex;
+   gap: 48px;
+}
+
+.infolist {
+display: flex;
+gap: 16px;
+}
+
+.infoListItem {
+    padding-right: 16px;
+    border-right: 1px solid rgba(17, 16, 28, 0.2);
+    height: 24px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.heart {
+    width: 26px;
+    height: 26px;
+}
+
+.expList {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 8px;
+} 
+
+.expListItem {
+    display: flex;
+    background: #f3f3f3;
+    padding: 8px 16px;
+    border-radius: 24px;
+}
+
+.charactersText {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.label {
+font-weight: 500;
+font-size: 16px;
+line-height: 1.5;
+color: #8a8a89;
+}
+
+.value {
+    color: #11101c;
+}
+
+.reviews {
+font-size: 16px;
+line-height: 1.25;
+color: rgba(17, 16, 28, 0.5);
+margin-bottom: 14px;
+}
+
+.more {
+    margin-bottom: 24px;
 }
