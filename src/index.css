@@ -1,6 +1,7 @@
 :root {
   font-family: Helvetica Neue, sans-serif;
   --primary-color: #f03f3b;
+  --secondary-color: rgba(240, 63, 59, 0.2);
   line-height: 1.5;
   font-weight: 400;
 color: #11101c;
@@ -12,12 +13,14 @@ max-width: 1440px;
 
 .theme-blue {
   --primary-color: #0957c3;  
+    --secondary-color:rgba(9, 87, 195, 0.2);
   --button-color: #0957c3;
  
 }
 
 .theme-green {
   --primary-color: #103931;  
+     --secondary-color:rgba(16, 57, 49, 0.2);
   --button-color: #103931;
  
 }

@@ -11,6 +11,8 @@ import {
 } from "redux-persist";
 import { authReducer } from "./auth/slice";
 import storage from "redux-persist/lib/storage";
+import { nanniesFiltersReducer } from "./filter/slice";
+import { nanniesReducer } from "./nanny/slice";
 
 
 
@@ -23,6 +25,8 @@ const authPersistConfig = {
 export const store = configureStore({
   reducer: {
     auth: persistReducer(authPersistConfig, authReducer),
+     nanniesFilters: nanniesFiltersReducer,
+     nannies: nanniesReducer,         
     
   },
   middleware: (getDefaultMiddleware) =>
