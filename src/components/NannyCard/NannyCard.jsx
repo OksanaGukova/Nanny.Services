@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import css from './NannyCard.module.css';
 import { selectIsLoggedIn, selectIsRefreshing, selectUser } from '../../redux/auth/selectors';
+import Appointment from '../Appointment/Appointment';
 
 // Import the selectors
 
@@ -23,11 +24,14 @@ export default function NannyCard({
 }) {
   const [isHidden, setIsHidden] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Use Redux selectors
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const user = useSelector(selectUser);
   const isRefreshing = useSelector(selectIsRefreshing);
+  const openMoreModal = () => setIsModalOpen(true);
+const closeMoreModal = () => setIsModalOpen(false);
 
   // Get userId from user object (assuming user has an id property)
   const userId = user?.id || null;
@@ -185,24 +189,30 @@ export default function NannyCard({
 
             <p className={css.reviews}>{about}</p>
             {isHidden && (
-              <div>
-                {reviews.map((review, index) => (
-                  <div key={index} className={css.review}>
-                    <div>
-                      <div className={css.reviewContainer}>
-                        <span className={css.reviewerInitial}>
-                          {review.reviewer.charAt(0).toUpperCase()}
-                        </span>
+            <div>
+                <div className={css.revievMainContainer}>
+                  {reviews.map((review, index) => (
+                    <div key={index} className={css.review}>
+                      <div>
+                        <div className={css.reviewContainer}>
+                          <span className={css.reviewerInitial}>
+                            {review.reviewer.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div className={css.reviewInfo}>
+                          <p className={css.reviewerName}>{review.reviewer}</p>
+                          <p className={css.reviewerRating}>⭐ {review.rating}</p>
+                        </div>
                       </div>
-                      <div className={css.reviewInfo}>
-                        <p className={css.reviewerName}>{review.reviewer}</p>
-                        <p className={css.reviewerRating}>⭐ {review.rating}</p>
-                      </div>
+                      <p className={css.reviewComment}>{review.comment}</p>
+                     
                     </div>
-                    <p className={css.reviewComment}>{review.comment}</p>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                    
+                </div>
+                 <button className={css.moreBtn} onClick={openMoreModal}>Make an appointment</button>
+            </div>
+              
             )}
 
             <p
@@ -212,9 +222,23 @@ export default function NannyCard({
             >
               {isHidden ? 'Read less' : 'Read more'}
             </p>
+          
           </div>
         </div>
       </div>
+      {isModalOpen && (
+  <div className={css.modalBackdrop} onClick={closeMoreModal}>
+    <div
+      className={css.modalContent}
+      onClick={(e) => e.stopPropagation()} // щоб не закривалося при кліку всередині
+    >
+      <button className={css.closeBtn} onClick={closeMoreModal}>
+        ✖
+      </button>
+      <Appointment nanny={{ avatar_url, name}} onClose={closeMoreModal} />
+    </div>
+  </div>
+)}
     </>
   );
 }

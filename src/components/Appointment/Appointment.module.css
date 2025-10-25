@@ -1,0 +1,93 @@
+.header {
+font-weight: 500;
+font-size: 40px;
+line-height: 1.2;
+letter-spacing: -0.02em;
+margin-bottom: 20px;
+}
+
+.text {
+    width: 472px;
+height: 176px;
+margin-bottom: 40px;
+}
+
+.txt {
+font-size: 16px;
+line-height: 1.25;
+color: rgba(17, 16, 28, 0.5);
+
+}
+
+.nannyesInfo {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.nannyesImg {
+    border-radius: 15px;
+width: 44px;
+height: 44px;
+}
+
+.nanny {
+font-weight: 500;
+font-size: 12px;
+line-height: 1.33;
+color: #8a8a89;
+margin-bottom: 4px;
+}
+
+.nannyesName {
+font-weight: 500;
+font-size: 16px;
+line-height: 1.5;
+}
+
+.labels {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.bigLabels {
+     display: flex;
+     flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+} 
+
+.label {
+    border: 1px solid rgba(17, 16, 28, 0.1);
+border-radius: 12px;
+padding: 16px 0 16px 18px;
+width: 232px;
+height: 52px;
+}
+
+.labelBig {
+    padding: 16px 0 16px 18px;
+width: 472px;
+}
+
+.textarea {
+    border: 1px solid rgba(17, 16, 28, 0.1);
+border-radius: 12px;
+padding: 16px 0 80px 18px;
+width: 472px;
+height: 116px;
+margin-bottom: 40px;
+}
+
+.submitBtn {
+    border-radius: 30px;
+width: 472px;
+height: 52px;
+font-weight: 500;
+font-size: 16px;
+line-height: 1.25;
+letter-spacing: -0.01em;
+color: #fbfbfb;
+background-color: var(--primary-color);
+}

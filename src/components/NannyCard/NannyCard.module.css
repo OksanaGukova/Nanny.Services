@@ -170,15 +170,18 @@ font-size: 16px;
 line-height: 1.25;
 }
 
-.reviewInfo {
-    margin-bottom: 18px;
+.revievMainContainer {
+    display: flex;
+    gap: 25px;
+    flex-direction: column;
 }
+
 
 .reviewComment {
 font-size: 16px;
 line-height: 1.25;
 color: rgba(17, 16, 28, 0.5);
-margin-bottom: 25px;
+
 }
 
 .heart {
@@ -189,3 +192,50 @@ margin-bottom: 25px;
     fill: var(--primary-color);
 }
 
+.moreBtn {
+    border-radius: 30px;
+background-color: var(--primary-color);
+width: 215px;
+height: 48px;
+font-weight: 500;
+font-size: 16px;
+line-height: 1.25;
+letter-spacing: -0.01em;
+color: #fbfbfb;
+margin-top: 48px;
+margin-bottom: 12px;
+}
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modalContent {
+  background: #fff;
+  padding: 64px 64px 64px 64px;
+  border-radius: 30px;
+  width: 599px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: #fbfbfb;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
