@@ -1,0 +1,44 @@
+.header {
+background-color: var(--primary-color); 
+height: 88px;
+display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 128px;
+    margin-bottom: 64px;
+  
+}
+
+.favicon {
+font-weight: 500;
+font-size: 24px;
+line-height: 1.17;
+letter-spacing: -0.02em;
+color: #fbfbfb;
+
+}
+
+.filterContainer {
+        margin-top: 64px;
+    margin-left: 128px;
+    width: 226px;
+}
+
+.filterContainer {
+        margin-top: 64px;
+    margin-left: 128px;
+    width: 226px;
+}
+
+.filterLabel {
+
+font-weight: 500;
+font-size: 14px;
+line-height: 1.25;
+color: #8a8a89;
+margin-bottom: 8px;
+}
+
+.cardsGrid {
+    margin-top: 32px;
+}

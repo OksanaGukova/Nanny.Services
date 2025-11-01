@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+
 import css from './Home.module.css'
 import { selectIsLoggedIn } from '../../redux/auth/selectors'
 import { useState } from 'react';
@@ -9,6 +9,8 @@ import RegistrationForm from '../../components/RegistrationForm/RegistrationForm
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 import UserMenu from '../../components/UserMenu/UserMenu';
 import Links from '../../components/Links/Links';
+import { useNavigate } from 'react-router-dom';
+
 
 
 export default function Home({
@@ -18,6 +20,12 @@ export default function Home({
       const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
    const isLoggedIn = useSelector(selectIsLoggedIn);
+     const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/nannies");
+  };
+
     return (
         <>
        
@@ -27,7 +35,9 @@ export default function Home({
                <div className={css.headerContainer}>
                     <h1 className={css.header}>Make Life Easier for the Family:</h1>
                     <p className={css.text}>Find Babysitters Online for All Occasions</p>
-                    <button className={css.start}>Get started
+                    <button className={css.start}
+                    onClick={handleClick}
+                         >Get started
                         <svg className={css.arrow}> 
                             <use href="/svg/icon.svg#icon-Arrow-16"></use>
                            </svg>

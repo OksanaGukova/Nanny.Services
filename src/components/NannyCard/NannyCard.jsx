@@ -4,62 +4,69 @@ import css from './NannyCard.module.css';
 import { selectIsLoggedIn, selectIsRefreshing, selectUser } from '../../redux/auth/selectors';
 import Appointment from '../Appointment/Appointment';
 
-// Import the selectors
-
-
 export default function NannyCard({
+  // note: keep id/_id props if they exist, but prefer nannyKey passed from parent
   id,
+  _id,
+  nannyKey: nannyKeyProp,
   name,
   avatar_url,
   birthday,
   experience,
-  reviews,
+  reviews = [],
   education,
   kids_age,
   price_per_hour,
   location,
   about,
-  characters,
+  characters = [],
   rating,
+  onFavoriteChange,
 }) {
   const [isHidden, setIsHidden] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Use Redux selectors
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const user = useSelector(selectUser);
   const isRefreshing = useSelector(selectIsRefreshing);
-  const openMoreModal = () => setIsModalOpen(true);
-const closeMoreModal = () => setIsModalOpen(false);
+  const closeMoreModal = () => setIsModalOpen(false);
 
-  // Get userId from user object (assuming user has an id property)
-  const userId = user?.id || null;
+  const userId = user?.id || user?._id || user?.email || 'guest';
 
-  // Function to get favorites from localStorage
+  // nannyKey: prefer prop from parent (constructed as nanny-{index}), fallback to id/_id or slug from name
+  const makeFallbackKey = () => {
+    const idVal = id ?? _id;
+    if (idVal) return String(idVal);
+    return String(
+      (name || avatar_url || '')
+        .toString()
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+    );
+  };
+  const nannyKey = nannyKeyProp ?? makeFallbackKey();
+
   const getFavorites = () => {
     if (!userId) return [];
     const favorites = localStorage.getItem(`favorites_${userId}`);
     return favorites ? JSON.parse(favorites) : [];
   };
 
-  // Function to save favorites to localStorage
   const saveFavorites = (favorites) => {
     if (!userId) return;
     localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites));
   };
 
-  // Check if this nanny is in favorites on component mount or when userId changes
   useEffect(() => {
-    if (isLoggedIn && userId && !isRefreshing) {
-      const favorites = getFavorites();
-      setIsFavorite(favorites.includes(id));
-    } else {
-      setIsFavorite(false); // Reset if not logged in or refreshing
-    }
-  }, [id, isLoggedIn, userId, isRefreshing]);
+    const favorites = getFavorites();
+    setIsFavorite(favorites.map(String).includes(String(nannyKey)));
+  }, [nannyKey, userId, isRefreshing]);
 
   const getAge = (birthday) => {
+    if (!birthday) return '';
     const birthDate = new Date(birthday);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -72,31 +79,26 @@ const closeMoreModal = () => setIsModalOpen(false);
 
   const age = getAge(birthday);
 
-  const toggleHiddenInfo = () => {
-    setIsHidden((prev) => !prev);
-  };
+  const toggleHiddenInfo = () => setIsHidden(prev => !prev);
 
   const handleHeartClick = () => {
     if (!isLoggedIn) {
-      // For unauthorized users, show alert (or modal/push notification)
       alert('This feature is only available for authorized users.');
       return;
     }
+    if (isRefreshing) return;
 
-    if (isRefreshing) {
-      // Optionally, disable during refresh
-      return;
-    }
-
-    // Toggle favorite status
     const favorites = getFavorites();
     let newFavorites;
     if (isFavorite) {
-      // Remove from favorites
-      newFavorites = favorites.filter((favId) => favId !== id);
+      // remove
+      newFavorites = favorites.filter(f => String(f) !== String(nannyKey));
+      if (typeof onFavoriteChange === 'function') {
+        onFavoriteChange(nannyKey);
+      }
     } else {
-      // Add to favorites
-      newFavorites = [...favorites, id];
+      // add
+      newFavorites = [...favorites.map(String), String(nannyKey)];
     }
     saveFavorites(newFavorites);
     setIsFavorite(!isFavorite);
@@ -176,7 +178,7 @@ const closeMoreModal = () => setIsModalOpen(false);
               <li className={css.expListItem}>
                 <p className={`${css.text} ${css.underline}`}>
                   <span className={css.label}>Characters:</span>{' '}
-                  <span className={css.value}>{characters.join(', ')}</span>
+                  <span className={css.value}>{(characters || []).join(', ')}</span>
                 </p>
               </li>
               <li className={css.expListItem}>
@@ -189,7 +191,7 @@ const closeMoreModal = () => setIsModalOpen(false);
 
             <p className={css.reviews}>{about}</p>
             {isHidden && (
-            <div>
+              <div>
                 <div className={css.revievMainContainer}>
                   {reviews.map((review, index) => (
                     <div key={index} className={css.review}>
@@ -205,14 +207,11 @@ const closeMoreModal = () => setIsModalOpen(false);
                         </div>
                       </div>
                       <p className={css.reviewComment}>{review.comment}</p>
-                     
                     </div>
                   ))}
-                    
                 </div>
-                 <button className={css.moreBtn} onClick={openMoreModal}>Make an appointment</button>
-            </div>
-              
+                <button className={css.moreBtn} onClick={() => setIsModalOpen(true)}>Make an appointment</button>
+              </div>
             )}
 
             <p
@@ -222,23 +221,24 @@ const closeMoreModal = () => setIsModalOpen(false);
             >
               {isHidden ? 'Read less' : 'Read more'}
             </p>
-          
+
           </div>
         </div>
       </div>
+
       {isModalOpen && (
-  <div className={css.modalBackdrop} onClick={closeMoreModal}>
-    <div
-      className={css.modalContent}
-      onClick={(e) => e.stopPropagation()} // щоб не закривалося при кліку всередині
-    >
-      <button className={css.closeBtn} onClick={closeMoreModal}>
-        ✖
-      </button>
-      <Appointment nanny={{ avatar_url, name}} onClose={closeMoreModal} />
-    </div>
-  </div>
-)}
+        <div className={css.modalBackdrop} onClick={closeMoreModal}>
+          <div
+            className={css.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className={css.closeBtn} onClick={closeMoreModal}>
+              ✖
+            </button>
+            <Appointment nanny={{ avatar_url, name }} onClose={closeMoreModal} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
