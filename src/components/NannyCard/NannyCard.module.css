@@ -1,6 +1,8 @@
 .cardContainer {
  padding: 24px 24px 0 24px;
-
+background-color: #fff;
+border-radius: 24px;
+width: 1184px;
 }
 
 .header {

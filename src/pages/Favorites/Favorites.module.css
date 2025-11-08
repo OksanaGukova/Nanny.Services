@@ -41,4 +41,8 @@ margin-bottom: 8px;
 
 .cardsGrid {
     margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: center;
 }
