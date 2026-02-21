@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-export const selectAllNannies = (state) => state.nannies.items; // всі няні
+export const selectAllNannies = (state) => state.nannies?.items ?? []; // всі няні
 export const selectSortFilter = (state) => state.nanniesFilters.sort;
 export const selectPriceFilter = (state) => state.nanniesFilters.priceFilter;
 export const selectPopularityFilter = (state) => state.nanniesFilters.popularity;
@@ -8,7 +8,7 @@ export const selectPopularityFilter = (state) => state.nanniesFilters.popularity
 export const selectFilteredNannies = createSelector(
   [selectAllNannies, selectSortFilter, selectPriceFilter, selectPopularityFilter],
   (nannies, sort, priceFilter, popularity) => {
-    let filtered = [...nannies];
+ let filtered = Array.isArray(nannies) ? [...nannies] : [];
 
     // 🔤 Сортування за алфавітом
     if (sort === "A to Z") {

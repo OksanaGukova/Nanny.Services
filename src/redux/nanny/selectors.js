@@ -1,1 +1,1 @@
- export const selectNannis = (state) => state.nannys.items || [];
+ export const selectNannis = (state) => state.nannies.items || [];
