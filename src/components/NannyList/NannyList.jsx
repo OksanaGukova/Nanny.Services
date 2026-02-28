@@ -4,33 +4,20 @@ import { useDispatch, useSelector } from "react-redux";
 import NannyCard from "../NannyCard/NannyCard.jsx";
 import css from "./NannyList.module.css";
 import { fetchNannies } from "../../redux/nanny/operations";
+import { selectFilteredNannies } from "../../redux/filter/selectors.js";
+import { selectNanniesError, selectNanniesLoading } from "../../redux/nanny/selectors.js";
 
-export default function NannyList() {
-  const dispatch = useDispatch();
-  const { items: nannys, isLoading, error } = useSelector((state) => state.nannies);
-  // Завантажте няньок при завантаженні компонента
-  useEffect(() => {
-    dispatch(fetchNannies());
-  }, [dispatch]);
-
-  const normalizedNannys = useMemo(() => {
-    return nannys.map((nanny, index) => ({
-      ...nanny,
-      id: nanny.id || `nanny-${index}`
-    }));
-  }, [nannys]);
-
-  if (isLoading) return <p>Завантаження няньок...</p>;
-  if (error) return <p>Помилка: {error}</p>;
-  if (!nannys || nannys.length === 0) return <p>Няньок не знайдено</p>;
-
+export default function NannyList({ nannys }) {
+  if (!nannys.length) return <p>Няньок не знайдено</p>;
   return (
     <ul className={css.list}>
-      {normalizedNannys.map((nanny) => (
-        <li key={nanny.id} className={css.listItem}>
+     {nannys.map((nanny, index) => (
+        <li key={nanny.id || index} className={css.listItem}>
           <NannyCard {...nanny} />
         </li>
       ))}
     </ul>
   );
 }
+
+
