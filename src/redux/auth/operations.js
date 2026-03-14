@@ -2,16 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../services/api";
 import { clearAuthHeader, setAuthHeader } from "../../services/api";
 
-
-
-
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (credentials, thunkAPI) => {
     try {
       const res = await axios.post("/auth/register", credentials);
-      setAuthHeader(res.data.token);
-      return res.data;
+      console.log("📝 Register response:", res.data);
+      setAuthHeader(res.data.data.accessToken);  // ✅ res.data.data.accessToken
+      return res.data.data;  // ✅ повертаємо дані з data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -20,14 +18,19 @@ export const registerUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   "auth/login",
-  async (credentials, thunkAPI) => {
+  async ({ email, password }, thunkAPI) => {  // ✅ Отримуємо email
     try {
-      const res = await axios.post("/auth/login", credentials);
-       const token = res.data.data.accessToken;
-      setAuthHeader(token);
-      return res.data;
+      const res = await axios.post("/auth/login", { email, password });
+      setAuthHeader(res.data.data.accessToken);  
+      return {
+        accessToken: res.data.data.accessToken,
+        user: { 
+          name: res.data.data.user?.name || email.split('@')[0],  // ✅ Використовуємо email
+          email: email 
+        }
+      };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data);
     }
   }
 );
@@ -43,7 +46,8 @@ export const refreshUser = createAsyncThunk(
     try {
       setAuthHeader(persistedToken);
       const res = await axios.post("/auth/refresh");
-      return res.data;
+      console.log("🔄 Refresh response:", res.data);
+      return res.data.data;  // ✅ повертаємо дані з data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -56,6 +60,15 @@ export const logoutUser = createAsyncThunk(
     try {
       await axios.post("/auth/logout");
       clearAuthHeader();
+      
+      const allKeys = Object.keys(localStorage);
+      allKeys.forEach(key => {
+        if (key.startsWith('favorites_')) {
+          console.log("🗑️ Clear favorites on logout:", key);
+          localStorage.removeItem(key);
+        }
+      });
+      
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
     }

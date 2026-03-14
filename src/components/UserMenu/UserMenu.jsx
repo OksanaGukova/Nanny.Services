@@ -1,48 +1,58 @@
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, selectIsLoggedIn } from "../../redux/auth/selectors";
-import css from './UserMenu.module.css'
+import css from './UserMenu.module.css';
 import { logoutUser } from "../../redux/auth/operations";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
 import LoginForm from "../LoginForm/LoginForm";
 
-export default function UserMenu () {
+export default function UserMenu() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const user = useSelector(selectUser);
-  const name = user?.name ?? user?.email ?? '';
-
+  
+  const [displayName, setDisplayName] = useState('');
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
+  // ✅ ОНОВЛЮЄМО ім'я при зміні user
+  useEffect(() => {
+    if (user?.name) {
+      setDisplayName(user.name);
+    } else if (user?.email) {
+      setDisplayName(user.email);
+    } else {
+      setDisplayName('User');
+    }
+  }, [user]);
+
   const handleLogout = async () => {
-    await dispatch(logoutUser());
-    navigate("/");
+    try {
+      await dispatch(logoutUser());
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
-  const handleOpenLogin = () => {
-    setIsLoginOpen(true);
-  };
-
-  const handleCloseLogin = () => {
-    setIsLoginOpen(false);
-  };
+  const handleOpenLogin = () => setIsLoginOpen(true);
+  const handleCloseLogin = () => setIsLoginOpen(false);
 
   return (
     <div className={css.container}>
       {isLoggedIn ? (
         <>
-          <p className={css.text}>Welcome, {name}</p>
-          <button className={css.LogBtn} type="button" onClick={handleLogout}>
+          <p className={css.text}>Welcome, {displayName} 👋</p>
+          <button className={css.LogBtn} onClick={handleLogout}>
             Logout
           </button>
         </>
       ) : (
         <>
           <p className={css.text}>Welcome, guest</p>
-          <button className={css.LogBtn} type="button" onClick={handleOpenLogin}>
+          <button className={css.LogBtn} onClick={handleOpenLogin}>
             Login
           </button>
 
