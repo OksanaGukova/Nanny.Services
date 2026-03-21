@@ -15,7 +15,7 @@ import {
 } from '../../redux/filter/slice';
 
 import { selectFilteredNannies } from '../../redux/filter/selectors';
-import { fetchNannies } from '../../redux/nanny/operations';
+import {  fetchNannies } from '../../redux/nanny/operations';
 
 export default function Nannies() {
   const dispatch = useDispatch();
@@ -78,14 +78,23 @@ export default function Nannies() {
       </div>
 
       <div className={css.filterContainer}>
-        <p className={css.filterLabel}>Filters</p>
+      <div>
+          <p className={css.filterLabel}>Filters</p>
+  
+         <div className={css.filterRow}>
+            <Filters
+              options={options}
+              defaultSelected={selected}
+              onSelect={handleFilterSelect}
+            />
 
-        <Filters
-          options={options}
-          defaultSelected={selected}
-          onSelect={handleFilterSelect}
-        />
+              <button className={css.addBtn} >Add Nanny</button>
+        </div>
+        
+         </div>
+ 
       </div>
+
 
       <div className={css.listContainer}>
         <NannyList nannys={visibleNannies} />

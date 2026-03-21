@@ -49,3 +49,14 @@ export const deleteNanny = createAsyncThunk(
   }
 );
 
+export const createNanny = createAsyncThunk(
+  "nannys/createNanny",
+  async (nannyData, thunkAPI) => { 
+    try {
+      const res = await axios.post("/nannys", nannyData);
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);

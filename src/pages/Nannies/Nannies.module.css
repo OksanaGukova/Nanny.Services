@@ -20,7 +20,25 @@ color: #fbfbfb;
 .filterContainer {
         margin-top: 64px;
     margin-left: 128px;
-    width: 226px;
+  
+  
+}
+
+.filterRow {
+    display: flex;
+    gap: 40px;
+   
+}
+
+.addBtn {
+    border-radius: 14px;
+width: 140px;   
+height: 52px;
+background-color:  var(--primary-color);
+font-weight: 500;
+font-size: 18px;
+line-height: 1.11;
+color: #fbfbfb;
 }
 
 .filterLabel {

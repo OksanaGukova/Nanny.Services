@@ -5,10 +5,7 @@ import { selectIsLoggedIn, selectIsRefreshing, selectUser } from '../../redux/au
 import Appointment from '../Appointment/Appointment';
 
 export default function NannyCard({
-  // note: keep id/_id props if they exist, but prefer nannyKey passed from parent
-  id,
   _id,
-  nannyKey: nannyKeyProp,
   name,
   avatar_url,
   birthday,
@@ -30,40 +27,28 @@ export default function NannyCard({
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const user = useSelector(selectUser);
   const isRefreshing = useSelector(selectIsRefreshing);
-  const closeMoreModal = () => setIsModalOpen(false);
 
-  const userId = user?.id || user?._id || user?.email || 'guest';
-
-  // nannyKey: prefer prop from parent (constructed as nanny-{index}), fallback to id/_id or slug from name
-  const makeFallbackKey = () => {
-    const idVal = id ?? _id;
-    if (idVal) return String(idVal);
-    return String(
-      (name || avatar_url || '')
-        .toString()
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "")
-    );
+  // ✅ УНІВЕРСАЛЬНІ ФУНКЦІЇ ДЛЯ FAVORITES
+  const getFavoritesKey = () => {
+    return user?._id ? `favorites_${user._id}` : "favorites_guest";
   };
-  const nannyKey = nannyKeyProp ?? makeFallbackKey();
 
   const getFavorites = () => {
-    if (!userId) return [];
-    const favorites = localStorage.getItem(`favorites_${userId}`);
+    const key = getFavoritesKey();
+    const favorites = localStorage.getItem(key);
     return favorites ? JSON.parse(favorites) : [];
   };
 
   const saveFavorites = (favorites) => {
-    if (!userId) return;
-    localStorage.setItem(`favorites_${userId}`, JSON.stringify(favorites));
+    const key = getFavoritesKey();
+    localStorage.setItem(key, JSON.stringify(favorites));
   };
 
+  // ✅ Синхронізуємо стан з localStorage
   useEffect(() => {
     const favorites = getFavorites();
-    setIsFavorite(favorites.map(String).includes(String(nannyKey)));
-  }, [nannyKey, userId, isRefreshing]);
+    setIsFavorite(favorites.some(f => String(f) === String(_id)));
+  }, [user, _id, isRefreshing]);
 
   const getAge = (birthday) => {
     if (!birthday) return '';
@@ -78,28 +63,28 @@ export default function NannyCard({
   };
 
   const age = getAge(birthday);
-
   const toggleHiddenInfo = () => setIsHidden(prev => !prev);
+  const closeMoreModal = () => setIsModalOpen(false);
 
+  // ✅ УНІВЕРСАЛЬНИЙ handleHeartClick
   const handleHeartClick = () => {
+    if (isRefreshing) return;
+    
     if (!isLoggedIn) {
-      alert('This feature is only available for authorized users.');
+      alert('Please login to use favorites 💛');
       return;
     }
-    if (isRefreshing) return;
 
     const favorites = getFavorites();
     let newFavorites;
+
     if (isFavorite) {
-      // remove
-      newFavorites = favorites.filter(f => String(f) !== String(nannyKey));
-      if (typeof onFavoriteChange === 'function') {
-        onFavoriteChange(nannyKey);
-      }
+      newFavorites = favorites.filter(f => String(f) !== String(_id));
+      onFavoriteChange?.(_id); // Для Favorites сторінки
     } else {
-      // add
-      newFavorites = [...favorites.map(String), String(nannyKey)];
+      newFavorites = [...favorites, String(_id)];
     }
+
     saveFavorites(newFavorites);
     setIsFavorite(!isFavorite);
   };
@@ -110,40 +95,36 @@ export default function NannyCard({
         <div className={css.header}>
           <div className={css.avatar}>
             <div className={css.circle}></div>
-            <img
-              className={css.avatarImg}
-              src={avatar_url}
-              alt={`${name}'s avatar`}
-            />
+            <img className={css.avatarImg} src={avatar_url} alt={`${name}'s avatar`} />
           </div>
+          
           <div>
             <div className={css.nannysInfo}>
               <div className={css.nannysName}>
                 <p className={css.nanny}>Nanny</p>
                 <p className={css.name}>{name}</p>
               </div>
+              
               <div className={css.infoItem}>
                 <ul className={css.infolist}>
                   <li className={css.infoListItem}>
-                    <svg>
-                      <use href="/svg/icon.svg#icon-map-pin"></use>
-                    </svg>
+                    <svg><use href="/svg/icon.svg#icon-map-pin"></use></svg>
                     <p className={css.information}>{location}</p>
                   </li>
                   <li className={css.infoListItem}>
-                    <svg>
-                      <use href="/svg/icon.svg#icon-star"></use>
-                    </svg>
+                    <svg><use href="/svg/icon.svg#icon-star"></use></svg>
                     <p className={css.information}>Rating:</p>
                     <p>{rating}</p>
                   </li>
                   <li className={css.infoListItem}>
-                    <p className={css.information}>Price / 1 hour: </p>
+                    <p className={css.information}>Price / 1 hour:</p>
                     <p className={`${css.information} ${css.infoGreen}`}>
                       {price_per_hour}$
                     </p>
                   </li>
                 </ul>
+                
+                {/* ✅ СЕРЦЕ З ОБРОБНИКОМ */}
                 <svg
                   className={`${css.heart} ${isFavorite ? css.favorite : ''}`}
                   onClick={handleHeartClick}
@@ -154,42 +135,41 @@ export default function NannyCard({
               </div>
             </div>
 
+            {/* Решта JSX без змін */}
             <ul className={css.expList}>
               <li className={css.expListItem}>
                 <p className={`${css.text} ${css.underline}`}>
-                  <span className={css.label}>Age:</span>{' '}
-                  <span className={css.value}>{age}</span>
+                  <span className={css.label}>Age:</span> <span>{age}</span>
                 </p>
               </li>
               <li className={css.expListItem}>
                 <p className={`${css.text} ${css.underline}`}>
-                  <span className={css.label}>Experience:</span>{' '}
-                  <span className={css.value}>{experience}</span>
+                  <span className={css.label}>Experience:</span> <span>{experience}</span>
                 </p>
               </li>
               <li className={css.expListItem}>
                 <p className={`${css.text} ${css.underline}`}>
-                  <span className={css.label}>Kids Age:</span>{' '}
-                  <span className={css.value}>{kids_age}</span>
+                  <span className={css.label}>Kids Age:</span> <span>{kids_age}</span>
                 </p>
               </li>
             </ul>
+
             <ul className={css.charactersText}>
               <li className={css.expListItem}>
                 <p className={`${css.text} ${css.underline}`}>
-                  <span className={css.label}>Characters:</span>{' '}
-                  <span className={css.value}>{(characters || []).join(', ')}</span>
+                  <span className={css.label}>Characters:</span> 
+                  <span>{(characters || []).join(', ')}</span>
                 </p>
               </li>
               <li className={css.expListItem}>
                 <p className={`${css.text} ${css.underline}`}>
-                  <span className={css.label}>Education:</span>{' '}
-                  <span className={css.value}>{education}</span>
+                  <span className={css.label}>Education:</span> <span>{education}</span>
                 </p>
               </li>
             </ul>
 
             <p className={css.reviews}>{about}</p>
+            
             {isHidden && (
               <div>
                 <div className={css.revievMainContainer}>
@@ -210,7 +190,12 @@ export default function NannyCard({
                     </div>
                   ))}
                 </div>
-                <button className={css.moreBtn} onClick={() => setIsModalOpen(true)}>Make an appointment</button>
+                <button 
+                  className={css.moreBtn} 
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Make an appointment
+                </button>
               </div>
             )}
 
@@ -221,20 +206,15 @@ export default function NannyCard({
             >
               {isHidden ? 'Read less' : 'Read more'}
             </p>
-
           </div>
         </div>
       </div>
 
+      {/* Modal */}
       {isModalOpen && (
         <div className={css.modalBackdrop} onClick={closeMoreModal}>
-          <div
-            className={css.modalContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button className={css.closeBtn} onClick={closeMoreModal}>
-              ✖
-            </button>
+          <div className={css.modalContent} onClick={e => e.stopPropagation()}>
+            <button className={css.closeBtn} onClick={closeMoreModal}>✖</button>
             <Appointment nanny={{ avatar_url, name }} onClose={closeMoreModal} />
           </div>
         </div>

@@ -1,8 +1,8 @@
 import { useSelector } from "react-redux";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useCallback } from "react";
 import NannyCard from "../../components/NannyCard/NannyCard";
 import Filters from "../../components/Filters/Filters";
-import { selectIsRefreshing, selectUser } from "../../redux/auth/selectors";
+import { selectIsRefreshing, selectUser, selectIsLoggedIn } from "../../redux/auth/selectors";
 import { selectAllNannies } from "../../redux/filter/selectors";
 import Links from "../../components/Links/Links";
 import UserMenu from "../../components/UserMenu/UserMenu";
@@ -11,128 +11,104 @@ import css from "./Favorites.module.css";
 export default function Favorites() {
   const allNannies = useSelector(selectAllNannies);
   const user = useSelector(selectUser);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
   const isRefreshing = useSelector(selectIsRefreshing);
   
   const [favorites, setFavorites] = useState([]);
   const [filterOption, setFilterOption] = useState("A to Z");
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const options = [
-    "A to Z",
-    "Z to A",
-    "Less than 10$",
-    "Greater than 10$",
-    "Popular",
-    "Not popular",
-    "Show all",
+    "A to Z", "Z to A", "Less than 10$", "Greater than 10$", 
+    "Popular", "Not popular", "Show all"
   ];
 
-  // ✅ ПОВНА ЛОГІКА З ОБРОБКОЮ ВСІХ СТАНІВ
-useEffect(() => {
-  console.clear();
+  // ✅ НАЙБІЛЬШ НАДІЙНА ЛОГІКА ЗАВАНТАЖЕННЯ
+ const loadFavorites = useCallback(() => {
+  console.log("🔄 DEBUG USER:", user); // ✅ ПОВНИЙ дебаг
   
-  if (isRefreshing || !allNannies?.length) {
-    console.log("⏳ Loading...");
-    return;
-  }
-
-  const currentUserId = user?._id || "guest";
-  console.log("👤 Current:", currentUserId);
-
-  // ✅ ОЧИЩАЄМО ТІЛЬКИ ЧУЖІ favorites
-  const allKeys = Object.keys(localStorage);
-  const oldFavoritesKeys = allKeys.filter(key => 
-    key.startsWith('favorites_') && 
-    key !== `favorites_${currentUserId}` &&
-    key !== 'favorites_guest'
-  );
+  // ✅ БЕЗПЕЧНИЙ userId
+const userId = user?._id || 'guest';
+  const isGuest = !userId;
   
-  oldFavoritesKeys.forEach(key => {
-    console.log("🗑️ Delete OLD:", key);
-    localStorage.removeItem(key);
-  });
-
-  let finalFavorites = [];
-
-  if (user?._id) {
-    // 🔐 USER MODE
-    const userFavorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`)) || [];
-    const guestFavorites = JSON.parse(localStorage.getItem('favorites_guest')) || [];
-    
-    if (userFavorites.length === 0 && guestFavorites.length > 0) {
-      console.log("🎉 TRANSFER guest →", user._id);
-      localStorage.setItem(`favorites_${user._id}`, JSON.stringify(guestFavorites));
-      localStorage.removeItem('favorites_guest');  // ✅ ВИДАЛЯЄМО guest
-      finalFavorites = guestFavorites;
-    } else {
-      finalFavorites = userFavorites;
-      // ✅ ОЧИЩУЄМО guest якщо вже є user favorites
-      localStorage.removeItem('favorites_guest');
-    }
+  console.log("🔍 Parsed:", { userId, isGuest });
+  
+  let key, loadedFavorites = [];
+  
+  if (isGuest) {
+    key = "favorites_guest";
+    loadedFavorites = JSON.parse(localStorage.getItem(key)) || [];
   } else {
-    // 👻 GUEST MODE
-    // ✅ ОЧИЩУЄМО ВСІ інші user favorites
-    allKeys.forEach(key => {
-      if (key.startsWith('favorites_') && key !== 'favorites_guest') {
-        console.log("🗑️ Delete user favorites:", key);
-        localStorage.removeItem(key);
-      }
-    });
-    finalFavorites = JSON.parse(localStorage.getItem('favorites_guest')) || [];
-  }
-
-  console.log("✅ LOADED:", finalFavorites.length);
-  setFavorites(finalFavorites.map(String));
-}, [user, isRefreshing, allNannies]);
-
-  // ✅ ФІЛЬТРАЦІЯ + СОРТУВАННЯ
-  const favoriteNannies = useMemo(() => {
-    if (!Array.isArray(allNannies)) return [];
-
-    let filtered = allNannies.filter((nanny) =>
-      favorites.includes(String(nanny._id))
-    );
-
-    switch (filterOption) {
-      case "A to Z":
-        filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "Z to A":
-        filtered = [...filtered].sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "Less than 10$":
-        filtered = filtered.filter((n) => Number(n.price_per_hour) < 10);
-        break;
-      case "Greater than 10$":
-        filtered = filtered.filter((n) => Number(n.price_per_hour) >= 10);
-        break;
-      case "Popular":
-        filtered = filtered.filter((n) => Number(n.rating) >= 4);
-        break;
-      case "Not popular":
-        filtered = filtered.filter((n) => Number(n.rating) < 4);
-        break;
-      default:
-        break;
+    key = `favorites_${userId}`;
+    loadedFavorites = JSON.parse(localStorage.getItem(key)) || [];
+    
+    // ✅ Переносимо guest якщо потрібно
+    const guestFavorites = JSON.parse(localStorage.getItem("favorites_guest")) || [];
+    if (guestFavorites.length > 0 && loadedFavorites.length === 0) {
+      console.log("🎉 TRANSFER:", guestFavorites.length);
+      localStorage.setItem(key, JSON.stringify(guestFavorites));
+      localStorage.removeItem("favorites_guest");
+      loadedFavorites = guestFavorites;
     }
+  }
+  
+  console.log("✅ FINAL:", { key, count: loadedFavorites.length });
+  setFavorites(loadedFavorites.map(String));
+  setIsInitialized(true);
+}, [user]);
 
-    return filtered;
+  // ✅ Завантажуємо після завершення refresh
+  useEffect(() => {
+    if (!isRefreshing && !isInitialized) {
+      loadFavorites();
+    }
+  }, [isRefreshing, isInitialized, loadFavorites]);
+
+  // ✅ Перезавантажуємо при зміні користувача
+  useEffect(() => {
+    if (isInitialized) {
+      loadFavorites();
+    }
+  }, [user, loadFavorites, isInitialized]);
+
+  const favoriteNannies = useMemo(() => {
+    if (!Array.isArray(allNannies) || favorites.length === 0) return [];
+
+    return allNannies
+      .filter(nanny => favorites.includes(String(nanny._id)))
+      .sort((a, b) => {
+        switch (filterOption) {
+          case "A to Z":
+            return a.name.localeCompare(b.name);
+          case "Z to A":
+            return b.name.localeCompare(a.name);
+          case "Less than 10$":
+            return Number(a.price_per_hour) - Number(b.price_per_hour);
+          case "Greater than 10$":
+            return Number(b.price_per_hour) - Number(a.price_per_hour);
+          case "Popular":
+            return Number(b.rating) - Number(a.rating);
+          case "Not popular":
+            return Number(a.rating) - Number(b.rating);
+          default:
+            return 0;
+        }
+      });
   }, [allNannies, favorites, filterOption]);
 
-  // ✅ ОБРОБКА ЗМІН улюблених
-  const handleFavoriteChange = (removedId) => {
-    const updated = favorites.filter((f) => String(f) !== String(removedId));
+  // ✅ Синхронізуємо видалення
+  const handleFavoriteChange = useCallback((removedId) => {
+    const updated = favorites.filter(id => id !== String(removedId));
     setFavorites(updated);
     
-    if (user?._id) {
-      localStorage.setItem(`favorites_${user._id}`, JSON.stringify(updated));
-    } else {
-      localStorage.setItem('favorites_guest', JSON.stringify(updated));
-    }
+    const userId = user?._id || "guest";
+    const key = userId === "guest" ? "favorites_guest" : `favorites_${userId}`;
+    localStorage.setItem(key, JSON.stringify(updated));
     
-    console.log("✨ Updated favorites:", updated.length);
-  };
+    console.log("❌ REMOVED:", removedId, "Remaining:", updated.length);
+  }, [favorites, user?._id]);
 
-  if (isRefreshing) {
+  if (isRefreshing || !isInitialized) {
     return <p className={css.loading}>Loading your favorites...</p>;
   }
 
@@ -145,20 +121,19 @@ useEffect(() => {
       </div>
 
       <div className={css.filterRow}>
-        <p className={css.filterLabel}>Filters</p>
+        <p className={css.filterLabel}>Filters:</p>
         <Filters
           options={options}
           defaultSelected={filterOption}
-          onSelect={(opt) => setFilterOption(opt)}
+          onSelect={setFilterOption}
         />
       </div>
 
       {favoriteNannies.length > 0 ? (
         <div className={css.cardsGrid}>
-          {favoriteNannies.map((nanny) => (
+          {favoriteNannies.map(nanny => (
             <NannyCard
               key={nanny._id}
-              nannyKey={nanny._id}
               {...nanny}
               onFavoriteChange={handleFavoriteChange}
             />
@@ -167,6 +142,9 @@ useEffect(() => {
       ) : (
         <p className={css.emptyText}>
           You don't have any favorite nannies yet 💛
+          {isLoggedIn && user?._id && (
+            <span> (ID: {user._id.slice(-4)})</span>
+          )}
         </p>
       )}
     </div>
