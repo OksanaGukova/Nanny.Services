@@ -15,7 +15,9 @@ import {
 } from '../../redux/filter/slice';
 
 import { selectFilteredNannies } from '../../redux/filter/selectors';
-import {  fetchNannies } from '../../redux/nanny/operations';
+import {  createNanny, fetchNannies } from '../../redux/nanny/operations';
+import { selectIsNanny } from '../../redux/nanny/selectors';
+import HandleAddNanny from '../../components/HandleAddNanny/HandleAddNanny';
 
 export default function Nannies() {
   const dispatch = useDispatch();
@@ -35,6 +37,21 @@ export default function Nannies() {
     'Not popular',
     'Show all',
   ];
+
+  const isNanny = useSelector(selectIsNanny);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleAddNanny = async (nannyData) => {
+    try {
+      await dispatch(createNanny(nannyData)).unwrap();
+      console.log('✅ Nanny added to Redux!');
+      alert('Nanny created successfully! 🎉');
+    } catch (error) {
+      console.error('❌ Create error:', error);
+      alert('Error: ' + error);
+    }
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     dispatch(fetchNannies());
@@ -88,7 +105,20 @@ export default function Nannies() {
               onSelect={handleFilterSelect}
             />
 
-              <button className={css.addBtn} >Add Nanny</button>
+           {isNanny && (
+  <button 
+    className={css.addBtn} 
+    onClick={() => setIsModalOpen(true)}
+  >
+    Add Nanny
+  </button>
+)}
+{isModalOpen && (
+  <HandleAddNanny
+    onClose={() => setIsModalOpen(false)}
+     onSubmit={handleAddNanny}
+  />
+)}
         </div>
         
          </div>

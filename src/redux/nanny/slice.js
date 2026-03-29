@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchNannies, fetchNannyById } from "./operations";
+import { createNanny, fetchNannies, fetchNannyById } from "./operations";
 
 const initialState = {
   items: [],
@@ -37,7 +37,21 @@ const nanniesSlice = createSlice({
       .addCase(fetchNannyById.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(createNanny.pending, (state) => {
+  state.isLoading = true;
+  state.error = null;
+})
+.addCase(createNanny.fulfilled, (state, action) => {
+  state.isLoading = false;
+
+  // 🔥 ДОДАЄМО НЯНЮ В СПИСОК
+  state.items.unshift(action.payload);
+})
+.addCase(createNanny.rejected, (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+});
   },
 });
 

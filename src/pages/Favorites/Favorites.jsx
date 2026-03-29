@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { useMemo, useEffect, useState, useCallback } from "react";
 import NannyCard from "../../components/NannyCard/NannyCard";
 import Filters from "../../components/Filters/Filters";
-import { selectIsRefreshing, selectUser, selectIsLoggedIn } from "../../redux/auth/selectors";
+import { selectIsRefreshing, selectUser } from "../../redux/auth/selectors";
 import { selectAllNannies } from "../../redux/filter/selectors";
 import Links from "../../components/Links/Links";
 import UserMenu from "../../components/UserMenu/UserMenu";
@@ -11,7 +11,6 @@ import css from "./Favorites.module.css";
 export default function Favorites() {
   const allNannies = useSelector(selectAllNannies);
   const user = useSelector(selectUser);
-  const isLoggedIn = useSelector(selectIsLoggedIn);
   const isRefreshing = useSelector(selectIsRefreshing);
   
   const [favorites, setFavorites] = useState([]);
@@ -25,13 +24,10 @@ export default function Favorites() {
 
   // ✅ НАЙБІЛЬШ НАДІЙНА ЛОГІКА ЗАВАНТАЖЕННЯ
  const loadFavorites = useCallback(() => {
-  console.log("🔄 DEBUG USER:", user); // ✅ ПОВНИЙ дебаг
-  
+
   // ✅ БЕЗПЕЧНИЙ userId
 const userId = user?._id || 'guest';
   const isGuest = !userId;
-  
-  console.log("🔍 Parsed:", { userId, isGuest });
   
   let key, loadedFavorites = [];
   
@@ -142,9 +138,6 @@ const userId = user?._id || 'guest';
       ) : (
         <p className={css.emptyText}>
           You don't have any favorite nannies yet 💛
-          {isLoggedIn && user?._id && (
-            <span> (ID: {user._id.slice(-4)})</span>
-          )}
         </p>
       )}
     </div>
