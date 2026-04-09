@@ -5,6 +5,7 @@ axios.defaults.baseURL = "http://localhost:3000";
 
 const setAuthHeader = (token) => {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+   axios.defaults.headers.common['Content-Type'] = 'application/json'; 
 };
 
 const clearAuthHeader = () => {

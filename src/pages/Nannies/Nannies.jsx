@@ -42,9 +42,10 @@ export default function Nannies() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleAddNanny = async (nannyData) => {
+      
     try {
       await dispatch(createNanny(nannyData)).unwrap();
-      console.log('✅ Nanny added to Redux!');
+     
       alert('Nanny created successfully! 🎉');
     } catch (error) {
       console.error('❌ Create error:', error);
@@ -85,6 +86,8 @@ export default function Nannies() {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error...</p>;
+
+
 
   return (
     <div className={css.container}>

@@ -22,25 +22,46 @@ export default function AddNannyModal({ onClose, onSubmit }) {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // ✅ Валідація (всі поля обов’язкові)
-    const hasEmpty = Object.values(form).some(v => !v.trim());
-    if (hasEmpty) {
-      alert('Please fill all fields');
-      return;
-    }
+  const hasEmpty = Object.values(form).some(v => String(v).trim() === '');
+  if (hasEmpty) {
+    alert('Please fill all fields');
+    return;
+  }
 
-    const formattedData = {
-      ...form,
-      characters: form.characters.split(',').map(c => c.trim()),
-      price_per_hour: Number(form.price_per_hour),
-    };
+const formattedData = {
+  ...form,
+  birthday: new Date(form.birthday).toISOString(), // 🔥 FIX
+  price_per_hour: Number(form.price_per_hour),
+  characters: form.characters
+    .split(',')
+    .map(c => c.trim())
+    .filter(Boolean),
+  rating: 1,
+};
 
-    onSubmit(formattedData);
+if (!formattedData.characters.length) {
+  alert("Add at least one character");
+  return;
+}
+
+if (!formattedData.price_per_hour) {
+  alert("Invalid price");
+  return;
+}
+
+  try {
+    await onSubmit(formattedData);
     onClose();
-  };
+  } catch (error) {
+    console.error("❌ Create nanny error:", error);
+    
+  }
+};
+
+
 
   return (
     <div className={css.modalBackdrop} onClick={onClose}>

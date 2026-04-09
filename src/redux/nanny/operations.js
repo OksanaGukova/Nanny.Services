@@ -56,7 +56,10 @@ export const createNanny = createAsyncThunk(
       const res = await axios.post("/nannys", nannyData);
       return res.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
+
