@@ -20,6 +20,7 @@ const nanniesSlice = createSlice({
       })
       .addCase(fetchNannies.fulfilled, (state, action) => {
         state.isLoading = false;
+        console.log("📥 fetchNannies - received:", action.payload?.length, "items");
         state.items = action.payload;
       })
       .addCase(fetchNannies.rejected, (state, action) => {
@@ -38,20 +39,34 @@ const nanniesSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
+      // createNanny
       .addCase(createNanny.pending, (state) => {
-  state.isLoading = true;
-  state.error = null;
-})
-.addCase(createNanny.fulfilled, (state, action) => {
-  state.isLoading = false;
-
-  // 🔥 ДОДАЄМО НЯНЮ В СПИСОК
-  state.items.unshift(action.payload);
-})
-.addCase(createNanny.rejected, (state, action) => {
-  state.isLoading = false;
-  state.error = action.payload;
-});
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createNanny.fulfilled, (state, action) => {
+        state.isLoading = false;
+        
+        const nanny = action.payload;
+        
+        if (nanny && nanny._id) {
+          // ✅ ПЕРЕВІРЯЄМО, ЧИ НЯНЯ УЖЕ Є
+          const exists = state.items.some(item => item._id === nanny._id);
+          
+          if (!exists) {
+            state.items.unshift(nanny);
+            console.log("✅ Nanny added to Redux:", nanny.name, "Total:", state.items.length);
+          } else {
+            console.log("⚠️ Nanny already exists:", nanny.name);
+          }
+        } else {
+          console.warn("⚠️ Invalid nanny:", nanny);
+        }
+      })
+      .addCase(createNanny.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
   },
 });
 

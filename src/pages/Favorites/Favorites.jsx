@@ -48,7 +48,6 @@ const userId = user?._id || 'guest';
     }
   }
   
-  console.log("✅ FINAL:", { key, count: loadedFavorites.length });
   setFavorites(loadedFavorites.map(String));
   setIsInitialized(true);
 }, [user]);

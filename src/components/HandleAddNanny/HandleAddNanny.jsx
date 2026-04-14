@@ -61,8 +61,6 @@ if (!formattedData.price_per_hour) {
   }
 };
 
-
-
   return (
     <div className={css.modalBackdrop} onClick={onClose}>
       <div className={css.modalContent} onClick={(e) => e.stopPropagation()}>

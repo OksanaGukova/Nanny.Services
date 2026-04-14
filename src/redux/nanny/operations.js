@@ -6,9 +6,15 @@ export const fetchNannies = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await axios.get("/nannys");
-     return res.data.data.data;
+
+      console.log("📥 FETCH RESPONSE:", res.data);
+      console.log("📥 INNER DATA:", res.data.data);
+
+      return res.data.data.data; // ✅ ФІКС
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -53,9 +59,22 @@ export const createNanny = createAsyncThunk(
   "nannys/createNanny",
   async (nannyData, thunkAPI) => { 
     try {
-      const res = await axios.post("/nannys", nannyData);
-      return res.data;
+      console.log("📤 SEND TO SERVER:", JSON.stringify(nannyData, null, 2));
+      
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      
+      const res = await axios.post("/nannys", nannyData, config);
+      console.log("✅ FULL RESPONSE:", JSON.stringify(res.data, null, 2));
+      
+      // ✅ ПОВЕРТАЄМО ПРАВИЛЬНО
+      return res.data.data; 
     } catch (error) {
+      console.log("❌ ERROR RESPONSE:", error.response?.data);
+      
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message
       );

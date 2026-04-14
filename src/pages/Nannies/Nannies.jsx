@@ -41,18 +41,23 @@ export default function Nannies() {
   const isNanny = useSelector(selectIsNanny);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleAddNanny = async (nannyData) => {
-      
-    try {
-      await dispatch(createNanny(nannyData)).unwrap();
-     
-      alert('Nanny created successfully! 🎉');
-    } catch (error) {
-      console.error('❌ Create error:', error);
-      alert('Error: ' + error);
-    }
-    setIsModalOpen(false);
-  };
+const handleAddNanny = async (nannyData) => {
+  try {
+    const result = await dispatch(createNanny(nannyData)).unwrap();
+    console.log('✅ Nanny created:', result.name);
+    
+    // ✅ НЕ викликаємо fetchNannies!
+    // Список оновлено optimistic ✅
+    
+    alert('Nanny created successfully! 🎉');
+  } catch (error) {
+    // Тільки при помилці
+    dispatch(fetchNannies());
+    console.error('❌ Retry fetch:', error);
+    alert('Error: ' + error);
+  }
+  setIsModalOpen(false);
+};
 
   useEffect(() => {
     dispatch(fetchNannies());
@@ -132,6 +137,7 @@ export default function Nannies() {
       <div className={css.listContainer}>
         <NannyList nannys={visibleNannies} />
       </div>
+      
 
       {visibleCount < allNannies.length && (
         <div className={css.loadContainer}>
@@ -141,7 +147,9 @@ export default function Nannies() {
           >
             Load more
           </button>
+          
         </div>
+        
       )}
     </div>
   );

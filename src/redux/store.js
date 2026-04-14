@@ -16,6 +16,7 @@ import { nanniesReducer } from "./nanny/slice";
 
 
 
+
 const authPersistConfig = {
   key: "auth",
   storage,
@@ -26,7 +27,7 @@ export const store = configureStore({
   reducer: {
     auth: persistReducer(authPersistConfig, authReducer),
      nanniesFilters: nanniesFiltersReducer,
-     nannies: nanniesReducer,         
+     nannies: nanniesReducer,  
     
   },
   middleware: (getDefaultMiddleware) =>
