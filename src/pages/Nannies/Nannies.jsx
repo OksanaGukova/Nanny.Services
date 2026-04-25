@@ -18,81 +18,93 @@ import { selectFilteredNannies } from '../../redux/filter/selectors';
 import {  createNanny, fetchNannies } from '../../redux/nanny/operations';
 import { selectIsNanny } from '../../redux/nanny/selectors';
 import HandleAddNanny from '../../components/HandleAddNanny/HandleAddNanny';
+import { setPage } from '../../redux/nanny/slice';
 
 export default function Nannies() {
   const dispatch = useDispatch();
 
   const allNannies = useSelector(selectFilteredNannies);
-  const { isLoading, error } = useSelector((state) => state.nannies);
+  const { isLoading, error, page: currentPage, totalPages } = useSelector(
+    (state) => state.nannies
+  );
 
   const [visibleCount, setVisibleCount] = useState(3);
   const [selected, setSelected] = useState('A to Z');
-
-  const options = [
-    'A to Z',
-    'Z to A',
-    'Less than 10$',
-    'Greater than 10$',
-    'Popular',
-    'Not popular',
-    'Show all',
-  ];
-
-  const isNanny = useSelector(selectIsNanny);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-const handleAddNanny = async (nannyData) => {
-  try {
-    const result = await dispatch(createNanny(nannyData)).unwrap();
-    console.log('✅ Nanny created:', result.name);
-    
-    // ✅ НЕ викликаємо fetchNannies!
-    // Список оновлено optimistic ✅
-    
-    alert('Nanny created successfully! 🎉');
-  } catch (error) {
-    // Тільки при помилці
-    dispatch(fetchNannies());
-    console.error('❌ Retry fetch:', error);
-    alert('Error: ' + error);
-  }
-  setIsModalOpen(false);
-};
+  const isNanny = useSelector(selectIsNanny);
 
+  // ✅ FETCH по сторінці
   useEffect(() => {
-    dispatch(fetchNannies());
-  }, [dispatch]);
+    dispatch(fetchNannies(currentPage));
+  }, [dispatch, currentPage]);
+
+  // ✅ RESET visibleCount при зміні сторінки
+  useEffect(() => {
+    setVisibleCount(3);
+  }, [currentPage]);
+
+  const handleAddNanny = async (nannyData) => {
+    try {
+      const result = await dispatch(createNanny(nannyData)).unwrap();
+      console.log('✅ Nanny created:', result.name);
+      alert('Nanny created successfully! 🎉');
+    } catch (error) {
+      dispatch(fetchNannies(currentPage));
+      console.error('❌ Retry fetch:', error);
+      alert('Error: ' + error);
+    }
+    setIsModalOpen(false);
+  };
+
+  
 
   const handleFilterSelect = (option) => {
     setSelected(option);
-    setVisibleCount(3); // при зміні фільтра знову показуємо 3
+    setVisibleCount(3);
+    // Reset to first page when filter changes
+    dispatch(setPage(1));
 
     if (option === 'A to Z' || option === 'Z to A') {
       dispatch(setSortFilter(option));
       dispatch(setPriceFilter(''));
       dispatch(setPopularityFilter(''));
-    } 
-    else if (option === 'Less than 10$' || option === 'Greater than 10$') {
+    } else if (option === 'Less than 10$' || option === 'Greater than 10$') {
       dispatch(setPriceFilter(option));
       dispatch(setSortFilter(''));
       dispatch(setPopularityFilter(''));
-    } 
-    else if (option === 'Popular' || option === 'Not popular') {
+    } else if (option === 'Popular' || option === 'Not popular') {
       dispatch(setPopularityFilter(option));
       dispatch(setSortFilter(''));
       dispatch(setPriceFilter(''));
-    } 
-    else if (option === 'Show all') {
+    } else if (option === 'Show all') {
       dispatch(resetFilters());
     }
   };
 
   const visibleNannies = allNannies.slice(0, visibleCount);
+  
+  // ✅ ЧИ ПОКАЗАНІ ВСІ НАНІ ПОТОЧНОЇ СТОРІНКИ?
+  const areAllNanniesVisible = visibleCount >= allNannies.length;
+  
+  // ✅ ЧИ МОЖНА КЛІЦНУТИ "LOAD MORE"?
+  const canLoadMore = !areAllNanniesVisible;
+  
+  // ✅ ЧИ МОЖНА КЛІЦНУТИ "NEXT PAGE"?
+  const canGoNextPage = currentPage < totalPages && areAllNanniesVisible;
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error...</p>;
 
-
+  console.log('🔍 DEBUG:', { 
+    currentPage, 
+    totalPages, 
+    allNanniesLength: allNannies.length,
+    visibleCount,
+    areAllNanniesVisible,
+    canLoadMore,
+    canGoNextPage
+  });
 
   return (
     <div className={css.container}>
@@ -103,56 +115,72 @@ const handleAddNanny = async (nannyData) => {
       </div>
 
       <div className={css.filterContainer}>
-      <div>
-          <p className={css.filterLabel}>Filters</p>
-  
-         <div className={css.filterRow}>
-            <Filters
-              options={options}
-              defaultSelected={selected}
-              onSelect={handleFilterSelect}
-            />
+        <p className={css.filterLabel}>Filters</p>
 
-           {isNanny && (
-  <button 
-    className={css.addBtn} 
-    onClick={() => setIsModalOpen(true)}
-  >
-    Add Nanny
-  </button>
-)}
-{isModalOpen && (
-  <HandleAddNanny
-    onClose={() => setIsModalOpen(false)}
-     onSubmit={handleAddNanny}
-  />
-)}
+        <div className={css.filterRow}>
+          <Filters
+            options={[
+              'A to Z',
+              'Z to A',
+              'Less than 10$',
+              'Greater than 10$',
+              'Popular',
+              'Not popular',
+              'Show all',
+            ]}
+            defaultSelected={selected}
+            onSelect={handleFilterSelect}
+          />
+
+          {isNanny && (
+            <button
+              className={css.addBtn}
+              onClick={() => setIsModalOpen(true)}
+            >
+              Add Nanny
+            </button>
+          )}
         </div>
-        
-         </div>
- 
       </div>
-
 
       <div className={css.listContainer}>
         <NannyList nannys={visibleNannies} />
       </div>
-      
 
-      {visibleCount < allNannies.length && (
+      {/* ✅ LOAD MORE - показується, коли не всі нані видимі */}
+      {canLoadMore && (
         <div className={css.loadContainer}>
           <button
             className={css.loadBtn}
-            onClick={() => setVisibleCount((prev) => prev + 3)}
+            onClick={() =>
+              setVisibleCount((prev) =>
+                Math.min(prev + 3, allNannies.length)
+              )
+            }
           >
             Load more
           </button>
-          
         </div>
-        
+      )}
+
+      {/* ✅ NEXT PAGE - показується, коли показані ВСІ нані і є наступна сторінка */}
+      {canGoNextPage && (
+        <div className={css.loadContainer}>
+          <button
+            className={css.next}
+            onClick={() => dispatch(setPage(currentPage + 1))}
+          >
+            Next page
+          </button>
+        </div>
+      )}
+
+      {isModalOpen && (
+        <HandleAddNanny
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleAddNanny}
+        />
       )}
     </div>
   );
 }
-
-

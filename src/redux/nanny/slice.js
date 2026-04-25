@@ -6,11 +6,18 @@ const initialState = {
   currentNanny: null,
   isLoading: false,
   error: null,
+    page: 1,
+  totalPages: 1,
 };
 
 const nanniesSlice = createSlice({
   name: "nannies",
   initialState,
+  reducers: {
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // fetchNannies
@@ -18,11 +25,13 @@ const nanniesSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchNannies.fulfilled, (state, action) => {
-        state.isLoading = false;
-        console.log("📥 fetchNannies - received:", action.payload?.length, "items");
-        state.items = action.payload;
-      })
+   .addCase(fetchNannies.fulfilled, (state, action) => {
+  state.isLoading = false;
+  console.log("📥 FULL PAYLOAD:", action.payload);
+  state.items = action.payload.data || [];  // ✅ Беремо .data!
+  state.page = action.payload.page;
+  state.totalPages = action.payload.totalPages;
+})
       .addCase(fetchNannies.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
@@ -69,5 +78,5 @@ const nanniesSlice = createSlice({
       });
   },
 });
-
+export const { setPage } = nanniesSlice.actions;
 export const nanniesReducer = nanniesSlice.reducer;

@@ -1,14 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../services/api";
 
-export const fetchNannies = createAsyncThunk(
+/* export const fetchNannies = createAsyncThunk(
   "nannys/fetchNannies",
   async (_, thunkAPI) => {
     try {
       const res = await axios.get("/nannys");
 
-      console.log("📥 FETCH RESPONSE:", res.data);
-      console.log("📥 INNER DATA:", res.data.data);
 
       return res.data.data.data; // ✅ ФІКС
     } catch (error) {
@@ -18,6 +16,28 @@ export const fetchNannies = createAsyncThunk(
     }
   }
 );
+ */
+
+export const fetchNannies = createAsyncThunk(
+  "nannys/fetchNannies",
+  async (page = 1, thunkAPI) => {
+    try {
+      const res = await axios.get(`/nannys?page=${page}`);
+
+      // ✅ Повертаємо ВСЮ структуру з pagination
+      return {
+        data: res.data.data.data,
+        page: res.data.data.page,
+        totalPages: res.data.data.totalPages,
+      };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+);
+
 
 export const fetchNannyById = createAsyncThunk(
   "nannys/fetchNannyById",

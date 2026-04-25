@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import css from './NannyCard.module.css';
 import { selectIsLoggedIn, selectIsRefreshing, selectUser } from '../../redux/auth/selectors';
 import Appointment from '../Appointment/Appointment';
+import { selectIsNanny } from '../../redux/nanny/selectors';
+import { deleteNanny, fetchNannies } from '../../redux/nanny/operations';
+import { currentPage } from '../../redux/filter/selectors';
 
 export default function NannyCard({
   _id,
@@ -20,6 +23,9 @@ export default function NannyCard({
   rating,
   onFavoriteChange,
 }) {
+
+    const dispatch = useDispatch();
+  const isNanny = useSelector(selectIsNanny);
   const [isHidden, setIsHidden] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -75,6 +81,9 @@ export default function NannyCard({
       return;
     }
 
+    
+
+
     const favorites = getFavorites();
     let newFavorites;
 
@@ -87,6 +96,21 @@ export default function NannyCard({
 
     saveFavorites(newFavorites);
     setIsFavorite(!isFavorite);
+  };
+
+const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this nanny profile?')) {
+      try {
+        await dispatch(deleteNanny(_id)).unwrap();
+        alert('✅ Nanny profile deleted!');
+        
+        // ✅ ПЕРЕЗАВАНТАЖИТИ СПИСОК
+        dispatch(fetchNannies(currentPage));
+        
+      } catch (error) {
+        alert('❌ Error: ' + error);
+      }
+    }
   };
 
   return (
@@ -132,6 +156,15 @@ export default function NannyCard({
                 >
                   <use href="/svg/icon.svg#icon-heart-1"></use>
                 </svg>
+                 {isNanny && (
+            <button 
+              className={css.deleteBtn}
+              onClick={handleDelete}
+              title="Delete this nanny profile"
+            >
+              🗑️
+            </button>
+          )}
               </div>
             </div>
 

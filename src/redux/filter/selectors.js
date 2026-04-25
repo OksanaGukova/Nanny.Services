@@ -4,6 +4,7 @@ export const selectAllNannies = (state) => state.nannies?.items ?? [];
 export const selectSortFilter = (state) => state.filter?.sort || '';        // ✅ state.filter!
 export const selectPriceFilter = (state) => state.filter?.priceFilter || ''; // ✅ state.filter!
 export const selectPopularityFilter = (state) => state.filter?.popularity || ''; // ✅ state.filter!
+export const currentPage = (state => state.nannies.page);
 
 export const selectFilteredNannies = createSelector(
   [selectAllNannies, selectSortFilter, selectPriceFilter, selectPopularityFilter],
