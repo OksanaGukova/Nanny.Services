@@ -106,7 +106,7 @@ color: rgba(17, 16, 28, 0.3);
   justify-content: center;
 }
 
-.loadBtn {
+.btn {
     border-radius: 30px;
 padding: 14px 40px;
 width: 159px;
@@ -122,4 +122,3 @@ margin-top: 64px;
 margin-bottom: 100px;
  
 }
-

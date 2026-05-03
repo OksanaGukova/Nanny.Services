@@ -27,7 +27,6 @@ const nanniesSlice = createSlice({
       })
    .addCase(fetchNannies.fulfilled, (state, action) => {
   state.isLoading = false;
-  console.log("📥 FULL PAYLOAD:", action.payload);
   state.items = action.payload.data || [];  // ✅ Беремо .data!
   state.page = action.payload.page;
   state.totalPages = action.payload.totalPages;

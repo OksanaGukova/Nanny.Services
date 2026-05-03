@@ -194,6 +194,12 @@ color: rgba(17, 16, 28, 0.5);
     fill: var(--primary-color);
 }
 
+.deleteBtn {
+      width: 26px;
+    height: 26px;
+    background-color: white;
+}
+
 .moreBtn {
     border-radius: 30px;
 background-color: var(--primary-color);

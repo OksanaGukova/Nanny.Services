@@ -1,30 +1,56 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../services/api";
 
-/* export const fetchNannies = createAsyncThunk(
-  "nannys/fetchNannies",
-  async (_, thunkAPI) => {
-    try {
-      const res = await axios.get("/nannys");
 
-
-      return res.data.data.data; // ✅ ФІКС
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message
-      );
-    }
-  }
-);
- */
 
 export const fetchNannies = createAsyncThunk(
   "nannys/fetchNannies",
-  async (page = 1, thunkAPI) => {
+  async (params, thunkAPI) => {
     try {
-      const res = await axios.get(`/nannys?page=${page}`);
+      const state = thunkAPI.getState();
+      const page = params?.page || 1;
+      
+      // ✅ Отримуємо фільтри з state
+const sort = state.nanniesFilters?.sort || '';
+const priceFilter = state.nanniesFilters?.priceFilter || '';
+const popularity = state.nanniesFilters?.popularity || '';
 
-      // ✅ Повертаємо ВСЮ структуру з pagination
+      // ✅ Будуємо query параметри
+      const queryParams = new URLSearchParams();
+      queryParams.append('page', page);
+      queryParams.append('perPage', 10); // ✅ Ваш розмір сторінки
+      
+      // ✅ СОРТУВАННЯ
+     if (sort === 'A to Z') {
+  queryParams.append('sortBy', 'name');
+  queryParams.append('sortOrder', 'asc');
+} else if (sort === 'Z to A') {
+  queryParams.append('sortBy', 'name');
+  queryParams.append('sortOrder', 'desc');
+}
+      
+      // ✅ ЦІНА
+      if (priceFilter === 'Less than 10$') {
+        queryParams.append('maxPrice', '10');
+      } else if (priceFilter === 'Greater than 10$') {
+        queryParams.append('minPrice', '10');
+      }
+      
+      // ✅ ПОПУЛЯРНІСТЬ
+      if (popularity === 'Popular') {
+        queryParams.append('minRating', '4');
+      } else if (popularity === 'Not popular') {
+        queryParams.append('maxRating', '3');
+      }
+
+      const res = await axios.get(`/nannys?${queryParams.toString()}`);
+console.log('🌐 Запит:', `/nannys?${queryParams.toString()}`);
+console.log('📥 Відповідь:', {
+  length: res.data.data.data.length,
+  firstNanny: res.data.data.data[0]?.name,
+  page: res.data.data.page,
+  totalPages: res.data.data.totalPages
+});
       return {
         data: res.data.data.data,
         page: res.data.data.page,
@@ -37,7 +63,6 @@ export const fetchNannies = createAsyncThunk(
     }
   }
 );
-
 
 export const fetchNannyById = createAsyncThunk(
   "nannys/fetchNannyById",
