@@ -110,7 +110,7 @@ color: rgba(17, 16, 28, 0.3);
     border-radius: 30px;
 padding: 14px 40px;
 width: 159px;
-height: 48px;
+height: auto;
 background-color:  var(--primary-color);
 font-weight: 500;
 font-size: 16px;
@@ -121,4 +121,9 @@ text-align: center;
 margin-top: 64px;
 margin-bottom: 100px;
  
+}
+
+
+.nextBtn{
+    height: auto;
 }

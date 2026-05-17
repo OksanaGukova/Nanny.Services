@@ -2,7 +2,7 @@
 import css from './Home.module.css'
 import { selectIsLoggedIn } from '../../redux/auth/selectors'
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../components/Modal/Modal';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import RegistrationForm from '../../components/RegistrationForm/RegistrationForm';
@@ -10,13 +10,14 @@ import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 import UserMenu from '../../components/UserMenu/UserMenu';
 import Links from '../../components/Links/Links';
 import { useNavigate } from 'react-router-dom';
+import { getGoogleOAuthUrl } from '../../redux/nanny/operations';
 
 
 
 export default function Home({
     activeClass
 }) {
-
+const dispatch = useDispatch();
       const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
    const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -24,6 +25,16 @@ export default function Home({
 
   const handleClick = () => {
     navigate("/nannies");
+  };
+
+    const handleGoogleLogin = async () => {
+    try {
+      const url = await dispatch(getGoogleOAuthUrl()).unwrap();
+      window.location.href = url;
+    } catch (error) {
+      console.error('❌ Error:', error);
+      alert('Failed to start Google login');
+    }
   };
 
     return (
@@ -64,6 +75,13 @@ export default function Home({
     >
       Registration
     </button>
+     {/* ✅ GOOGLE OAUTH КНОПКА */}
+          <button 
+  className={css.googleBtn}
+  onClick={handleGoogleLogin}
+>
+  Sign in with Google
+</button>
     <ThemeToggle />
   </div>
 )}

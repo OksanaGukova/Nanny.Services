@@ -1,8 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../services/api";
 
-
-
 export const fetchNannies = createAsyncThunk(
   "nannys/fetchNannies",
   async (params, thunkAPI) => {
@@ -44,13 +42,7 @@ const popularity = state.nanniesFilters?.popularity || '';
       }
 
       const res = await axios.get(`/nannys?${queryParams.toString()}`);
-console.log('🌐 Запит:', `/nannys?${queryParams.toString()}`);
-console.log('📥 Відповідь:', {
-  length: res.data.data.data.length,
-  firstNanny: res.data.data.data[0]?.name,
-  page: res.data.data.page,
-  totalPages: res.data.data.totalPages
-});
+
       return {
         data: res.data.data.data,
         page: res.data.data.page,
@@ -127,3 +119,17 @@ export const createNanny = createAsyncThunk(
   }
 );
 
+
+export const getGoogleOAuthUrl = createAsyncThunk(
+  'auth/getGoogleOAuthUrl',
+  async (_, thunkAPI) => {
+    try {
+      const res = await axios.get('/auth/get-oauth-url');
+      return res.data.data.url;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+);

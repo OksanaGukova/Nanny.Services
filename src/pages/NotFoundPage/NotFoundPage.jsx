@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import css from "./NotFoundPage.module.css";
 
 export default function NotFoundPage() {
   const [timeLeft, setTimeLeft] = useState(10);
@@ -19,10 +20,23 @@ export default function NotFoundPage() {
   }, [timeLeft, navigate]);
 
   return (
-    <div>
-      <p>Sorry, this page does not exist</p>
-      <p>Redirecting to Home page in {timeLeft} seconds...</p>
-      <Link to="/">Home page</Link>
-    </div>
+   <div className={css.notFoundContainer}>
+  <div className={css.notFoundCard}>
+    <h1 className={css.notFoundTitle}>404</h1>
+
+    <p className={css.notFoundText}>
+      Sorry, this page does not exist
+    </p>
+
+    <p className={css.redirectText}>
+      Redirecting to Home page in{" "}
+      <span className={css.timer}>{timeLeft}</span> seconds...
+    </p>
+
+    <Link className={css.homeLink} to="/">
+      Home page
+    </Link>
+  </div>
+</div>
   );
 }

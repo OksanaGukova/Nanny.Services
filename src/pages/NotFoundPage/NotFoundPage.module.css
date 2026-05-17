@@ -1,0 +1,68 @@
+.notFoundContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  padding: 24px;
+}
+
+.notFoundCard {
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 48px 32px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.notFoundTitle {
+  font-size: 96px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 16px;
+  color: var(--primary-color);
+}
+
+.notFoundText {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #111111;
+}
+
+.redirectText {
+  font-size: 16px;
+  color: #666666;
+  margin-bottom: 32px;
+}
+
+.timer {
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.homeLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 30px;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 250ms ease,
+    transform 250ms ease;
+}
+
+.homeLink:hover,
+.homeLink:focus {
+  background-color:var(--primary-color);
+  transform: translateY(-2px);
+}

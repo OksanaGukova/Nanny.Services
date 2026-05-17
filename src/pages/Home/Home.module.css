@@ -193,3 +193,33 @@ color: #11101c;
   background: white;
   border-radius: 50%;
 }
+
+.googleBtn {
+  position: relative;
+  min-width: 200px;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 4px;
+  border: none;
+  background: linear-gradient(135deg, 
+    #4285f4 0%, 
+    #34a853 25%, 
+    #fbbc05 50%, 
+    #ea4335 75%);
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.googleBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.googleBtn:active {
+  transform: translateY(0);
+}

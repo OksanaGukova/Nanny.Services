@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'; // ✅ useMemo!
+import { useEffect, useState } from 'react'; // 
 import { useDispatch, useSelector } from 'react-redux';
 
 import Links from '../../components/Links/Links';
@@ -25,10 +25,12 @@ import {
   selectPopularityFilter, 
   selectAllNannies
 } from '../../redux/filter/selectors';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export default function Nannies() {
   const dispatch = useDispatch();
-
+const navigate = useNavigate();
   // ✅ ВСІ селектори
   const allNannies = useSelector(selectAllNannies);
   const { isLoading, error } = useSelector((state) => state.nannies);
@@ -45,6 +47,15 @@ export default function Nannies() {
   const [selected, setSelected] = useState('A to Z');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+  if (error === 'Please provide Authorization header') {
+
+    toast.error('Please login first');
+
+    navigate('/', { replace: true });
+  }
+}, [error, navigate]);
+
   // ✅ useEffect - завантаження з фільтрами
   useEffect(() => {
     dispatch(fetchNannies({ page: currentPage || 1 }));
@@ -55,45 +66,10 @@ export default function Nannies() {
     setVisibleCount(3);
   }, [currentPage]);
 
-  // ✅ 🔥 ЛОКАЛЬНА ФІЛЬТРАЦІЯ (основне!)
-  const filteredNannies = useMemo(() => {
-    let result = [...allNannies];
-    
-    console.log('🔄 Фільтруємо:', { sort, priceFilter, popularity });
-    
-    // Сортування
-    if (sort === 'A to Z') {
-      result.sort((a, b) => a.name?.localeCompare(b.name) || 0);
-    } else if (sort === 'Z to A') {
-      result.sort((a, b) => b.name?.localeCompare(a.name) || 0);
-    }
-    
-    // Ціна (ЗМІНІТЬ ПОЛЕ НА ВАШЕ!)
-    if (priceFilter === 'Less than 10$') {
-      result = result.filter(nanny => 
-        Number(nanny.hourlyRate || nanny.price || 0) < 10
-      );
-    } else if (priceFilter === 'Greater than 10$') {
-      result = result.filter(nanny => 
-        Number(nanny.hourlyRate || nanny.price || 0) >= 10
-      );
-    }
-    
-    // Популярність (ЗМІНІТЬ ПОЛЕ НА ВАШЕ!)
-    if (popularity === 'Popular') {
-      result = result.filter(nanny => Number(nanny.rating || 0) >= 4);
-    } else if (popularity === 'Not popular') {
-      result = result.filter(nanny => Number(nanny.rating || 0) < 3);
-    }
-    
-    console.log('✅ Результат:', result.length, 'з', allNannies.length);
-    return result;
-  }, [allNannies, sort, priceFilter, popularity]);
-
-  const visibleNannies = filteredNannies.slice(0, visibleCount);
+  const visibleNannies = allNannies.slice(0, visibleCount);
   
   // ✅ Логіка кнопок для ФІЛЬТРОВАНИХ даних
-  const areAllVisible = visibleCount >= filteredNannies.length;
+  const areAllVisible = visibleCount >= allNannies.length;
   const canLoadMore = !areAllVisible;
   const canGoNextPage = currentPage < totalPages && areAllVisible;
 
@@ -132,15 +108,9 @@ export default function Nannies() {
   };
 
   // DEBUG
-  console.log('🔍 СТАНИ:', {
-    all: allNannies.length,
-    filtered: filteredNannies.length,
-    visible: visibleNannies.length,
-    page: `${currentPage}/${totalPages}`
-  });
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return null;
 
   return (
     <div className={css.container}>
@@ -179,8 +149,8 @@ export default function Nannies() {
       {canLoadMore && (
         <div className={css.loadContainer}>
           <button
-            className={css.loadBtn}
-            onClick={() => setVisibleCount(prev => Math.min(prev + 3, filteredNannies.length))}
+            className={css.btn}
+            onClick={() => setVisibleCount(prev => Math.min(prev + 3, allNannies.length))}
           >
             Load more
           </button>
@@ -191,7 +161,7 @@ export default function Nannies() {
       {canGoNextPage && (
         <div className={css.loadContainer}>
           <button
-            className={css.next}
+            className={`${css.btn} ${css.nextBtn}`}
             onClick={() => dispatch(setPage(currentPage + 1))}
           >
             Next page ({currentPage + 1}/{totalPages})
