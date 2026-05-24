@@ -19,13 +19,11 @@ const popularity = state.nanniesFilters?.popularity || '';
       queryParams.append('perPage', 10); // ✅ Ваш розмір сторінки
       
       // ✅ СОРТУВАННЯ
-     if (sort === 'A to Z') {
-  queryParams.append('sortBy', 'name');
-  queryParams.append('sortOrder', 'asc');
-} else if (sort === 'Z to A') {
-  queryParams.append('sortBy', 'name');
-  queryParams.append('sortOrder', 'desc');
-}
+   if (sort === 'A to Z') {
+        queryParams.append('sort', 'a-z');
+      } else if (sort === 'Z to A') {
+        queryParams.append('sort', 'z-a');
+      }
       
       // ✅ ЦІНА
       if (priceFilter === 'Less than 10$') {
@@ -40,7 +38,7 @@ const popularity = state.nanniesFilters?.popularity || '';
       } else if (popularity === 'Not popular') {
         queryParams.append('maxRating', '3');
       }
-
+ console.log('🌐 URL:', queryParams.toString()); 
       const res = await axios.get(`/nannys?${queryParams.toString()}`);
 
       return {

@@ -85,7 +85,6 @@ const navigate = useNavigate();
   };
 
   const handleFilterSelect = (option) => {
-    console.log('🎯 Фільтр:', option);
     setSelected(option);
     setVisibleCount(3);
     dispatch(setPage(1)); // Reset сторінки
