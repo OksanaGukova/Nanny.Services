@@ -2,6 +2,7 @@ import ThemeToggle from "../ThemeToggle/ThemeToggle"
 import { Layout } from '../Layout/Layout';
 import { Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
+import GoogleCallback from "../../pages/GoogleCallback/GoogleCallback";
 
 const Home = lazy(() => import ('../../pages/Home/Home'));
 const RegistrationPage = lazy(() => import ('../../pages/RegistrationPage/RegistrationPage'));
@@ -23,6 +24,7 @@ function App() {
       <Route path="/nannies" element={<Nannies />} />
       <Route path="/favorites" element={<Favorites />} />
       <Route path="*" element={<NotFoundPage />} />
+       <Route path="/auth/confirm-google-auth" element={<GoogleCallback />} />
     </Routes>
    </Layout>
     </>

@@ -118,16 +118,5 @@ export const createNanny = createAsyncThunk(
 );
 
 
-export const getGoogleOAuthUrl = createAsyncThunk(
-  'auth/getGoogleOAuthUrl',
-  async (_, thunkAPI) => {
-    try {
-      const res = await axios.get('/auth/get-oauth-url');
-      return res.data.data.url;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message
-      );
-    }
-  }
-);
+
+

@@ -10,7 +10,8 @@ import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 import UserMenu from '../../components/UserMenu/UserMenu';
 import Links from '../../components/Links/Links';
 import { useNavigate } from 'react-router-dom';
-import { getGoogleOAuthUrl } from '../../redux/nanny/operations';
+import { getGoogleOAuthUrl } from '../../redux/auth/operations';
+
 
 
 
@@ -57,46 +58,53 @@ const dispatch = useDispatch();
                </div>
             </div>
             <div className={css.picture}>
-           <div className={css.pictureContainer}>
-                    <div className={css.homeNannies}>
-                      <Links/>
-                                                 {isLoggedIn && (
-  <UserMenu/>
-)}
-                    </div>
-{!isLoggedIn && (
-  <div className={css.login}>
-    <div className={css.loginBox} onClick={() => setLoginOpen(true)}>
-      <button className={css.loginText}>Log in</button>
+          <div className={css.formContainer}>
+             <div className={css.pictureContainer}>
+                      <div className={css.homeNannies}>
+                        <Links/>
+                                                   {isLoggedIn && (
+    <UserMenu/>
+  )}
+                      </div>
+  {!isLoggedIn && (
+    <div className={css.login}>
+      <div className={css.loginBox} onClick={() => setLoginOpen(true)}>
+        <button className={css.loginText}>Log in</button>
+      </div>
+      <button
+        className={`${css.regButton} ${activeClass || ""}`}
+        onClick={() => setRegisterOpen(true)}
+      >
+        Registration
+      </button>
+      
+      <ThemeToggle />
+      
+     
     </div>
-    <button
-      className={`${css.regButton} ${activeClass || ""}`}
-      onClick={() => setRegisterOpen(true)}
-    >
-      Registration
-    </button>
-     {/* ✅ GOOGLE OAUTH КНОПКА */}
+  )}
+                
+             </div>
+                       {isLoginOpen && (
+    <Modal onClose={() => setLoginOpen(false)}>
+      <LoginForm onClose={() => setLoginOpen(false)} />
+    </Modal>
+  )}
+  {isRegisterOpen && (
+    <Modal onClose={() => setRegisterOpen(false)}>
+      <RegistrationForm onClose={() => setRegisterOpen(false)} />
+    </Modal>
+  )} 
+  {/* ✅ GOOGLE OAUTH КНОПКА */}
           <button 
   className={css.googleBtn}
   onClick={handleGoogleLogin}
 >
   Sign in with Google
-</button>
-    <ThemeToggle />
-  </div>
-)}
-                        
-           </div>
-                     {isLoginOpen && (
-  <Modal onClose={() => setLoginOpen(false)}>
-    <LoginForm onClose={() => setLoginOpen(false)} />
-  </Modal>
-)}
-{isRegisterOpen && (
-  <Modal onClose={() => setRegisterOpen(false)}>
-    <RegistrationForm onClose={() => setRegisterOpen(false)} />
-  </Modal>
-)}
+</button>   
+          </div>
+
+      
   <div className={css.experience}>
                 <div className={css.checkContainer}>
                    <svg className={css.check}> 

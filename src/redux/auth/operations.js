@@ -61,3 +61,53 @@ export const logoutUser = createAsyncThunk(
     }
   }
 );
+
+
+export const getGoogleOAuthUrl = createAsyncThunk(
+  'auth/getGoogleOAuthUrl',
+  async (_, thunkAPI) => {
+    try {
+      console.log('📤 Fetching OAuth URL...');
+      const res = await axios.get('/auth/get-oauth-url');
+      
+      console.log('📥 Response:', res.data);
+      console.log('📥 URL:', res.data.data.url);
+      
+      return res.data.data.url;
+    } catch (error) {
+      console.error('❌ Request failed:', error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+);
+
+export const confirmGoogleAuth = createAsyncThunk(
+  'auth/confirmGoogleAuth',
+  async (_, thunkAPI) => {
+    try {
+      // Google вже перенаправив нас сюди з кодом
+      // Бекенд вже обробив і повернув дані
+      // Беремо дані з URL
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      
+      if (!code) {
+        throw new Error('No authorization code');
+      }
+
+      // Вже обробилось на бекенді, тепер просто отримуємо дані
+      const res = await axios.get(`/auth/confirm-google-auth?code=${code}`);
+      
+      return {
+        accessToken: res.data.data.accessToken,
+        user: res.data.data.user,
+      };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+);
