@@ -1,16 +1,16 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "https://nanny-services-back.vercel.app", // ✅ англійські букви!
-  headers: { 
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Credentials": "true"
-  }
+// Базовий URL без /api (оскільки маршрути вже містять префікси)
+ const api = axios.create({
+  baseURL: "https://nanny-servies-back.vercel.app",
+  headers: { "Content-Type": "application/json" }
 });
+
+
 
 const setAuthHeader = (token) => {
   api.defaults.headers.common.Authorization = `Bearer ${token}`;
-  api.defaults.headers.common['Content-Type'] = 'application/json'; 
+   api.defaults.headers.common['Content-Type'] = 'application/json'; 
 };
 
 const clearAuthHeader = () => {
