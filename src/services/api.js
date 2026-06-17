@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Базовий URL без /api (оскільки маршрути вже містять префікси)
-axios.defaults.baseURL = "https://nanny-services-ivory.vercel.app/";
+axios.defaults.baseURL = "https://nanny-servises-back.vercel.app";
 
 const setAuthHeader = (token) => {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
