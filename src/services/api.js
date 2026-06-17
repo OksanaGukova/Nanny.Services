@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Базовий URL без /api (оскільки маршрути вже містять префікси)
  const api = axios.create({
-  baseURL: "https://nanny-servies-back.vercel.app",
+  baseURL: "https://nanny-services-back.vercel.app",
   headers: { "Content-Type": "application/json" }
 });
 
