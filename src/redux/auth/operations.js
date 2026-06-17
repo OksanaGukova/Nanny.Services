@@ -1,17 +1,21 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "../../services/api";
-import { clearAuthHeader, setAuthHeader } from "../../services/api";
+import api, { clearAuthHeader, setAuthHeader } from "../../services/api";
 
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (credentials, thunkAPI) => {
     try {
-      const res = await axios.post("/auth/register", credentials);
+      const res = await api.post("/auth/register", credentials);
+
       console.log("📝 Register response:", res.data);
-      setAuthHeader(res.data.data.accessToken);  // ✅ res.data.data.accessToken
-      return res.data.data;  // ✅ повертаємо дані з data
+
+      setAuthHeader(res.data.data.accessToken);
+
+      return res.data.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -20,7 +24,7 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async ({ email, password }, thunkAPI) => {
     try {
-      const res = await axios.post("/auth/login", { email, password });
+      const res = await api.post("/auth/login", { email, password });
 
       setAuthHeader(res.data.data.accessToken);
 
@@ -41,7 +45,7 @@ export const refreshUser = createAsyncThunk(
     }
     try {
       setAuthHeader(persistedToken);
-      const res = await axios.post("/auth/refresh");
+      const res = await api.post("/auth/refresh");
       return res.data.data;  // ✅ повертаємо дані з data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -53,7 +57,7 @@ export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, thunkAPI) => {
     try {
-      await axios.post("/auth/logout");
+      await api.post("/auth/logout");
       clearAuthHeader();
       
     } catch (error) {
@@ -68,7 +72,7 @@ export const getGoogleOAuthUrl = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       console.log('📤 Fetching OAuth URL...');
-      const res = await axios.get('/auth/get-oauth-url');
+      const res = await api.get('/auth/get-oauth-url');
       
       console.log('📥 Response:', res.data);
       console.log('📥 URL:', res.data.data.url);
@@ -98,7 +102,7 @@ export const confirmGoogleAuth = createAsyncThunk(
       }
 
       // Вже обробилось на бекенді, тепер просто отримуємо дані
-      const res = await axios.get(`/auth/confirm-google-auth?code=${code}`);
+      const res = await api.get(`/auth/confirm-google-auth?code=${code}`);
       
       return {
         accessToken: res.data.data.accessToken,

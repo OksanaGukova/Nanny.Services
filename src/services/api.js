@@ -1,16 +1,21 @@
 import axios from "axios";
 
 // Базовий URL без /api (оскільки маршрути вже містять префікси)
-axios.defaults.baseURL = "https://nanny-servises-back.vercel.app";
+ const api = axios.create({
+  baseURL: "https://nanny-servises-back.vercel.app",
+  headers: { "Content-Type": "application/json" }
+});
+
+
 
 const setAuthHeader = (token) => {
-  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-   axios.defaults.headers.common['Content-Type'] = 'application/json'; 
+  api.defaults.headers.common.Authorization = `Bearer ${token}`;
+   api.defaults.headers.common['Content-Type'] = 'application/json'; 
 };
 
 const clearAuthHeader = () => {
-  axios.defaults.headers.common.Authorization = "";
+  api.defaults.headers.common.Authorization = "";
 };
 
 export { setAuthHeader, clearAuthHeader };
-export default axios;
+export default api;
